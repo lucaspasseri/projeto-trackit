@@ -5,8 +5,8 @@ export default function Home(){
             <>
                 <Header>
                     <Logo>
-                        <ImagemLogo src="https://thumbs.dreamstime.com/b/growing-graph-d-histogram-green-arrow-32612397.jpg"/>
-                        <ImagemLogo src="https://images.ctfassets.net/zsv3d0ugroxu/4p1Y4eUTpHQW5OwNt22qGy/9da0eb52fa76dbf7666c67dafaaac5b7/Logo_TrackIt"/>
+                        <ImageLogo src="https://thumbs.dreamstime.com/b/growing-graph-d-histogram-green-arrow-32612397.jpg"/>
+                        <ImageLogo src="https://images.ctfassets.net/zsv3d0ugroxu/4p1Y4eUTpHQW5OwNt22qGy/9da0eb52fa76dbf7666c67dafaaac5b7/Logo_TrackIt"/>
                     </Logo>
                 </Header>
                 <UserActs>
@@ -29,7 +29,7 @@ const Header = styled.div`
 const Logo = styled.div`
     width: 180px;
 `;
-const ImagemLogo = styled.img`
+const ImageLogo = styled.img`
     width: 160px;
 `;
 
