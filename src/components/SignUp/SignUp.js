@@ -1,6 +1,46 @@
 import styled from 'styled-components';
+import { useState} from 'react';
+import axios from 'axios';
+import Loader from "react-loader-spinner";
+import { Link } from 'react-router-dom';
 
 export default function SignUp(){
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [name, setName] = useState("");
+    const [image, setImage] = useState("");
+    const [loading, setLoading] = useState(false);
+
+    function newUser(){
+        if(name!== "" && email !== "" && password !== "" && image!== ""){
+            const body = {
+                email,
+                name,
+                image,
+                password
+            }
+
+            const request = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/sign-up", body);
+            setLoading(true);
+            request.then(response => {
+                console.log(response);
+                setEmail("");
+                setPassword("");
+                setName("");
+                setImage("");
+                setLoading(false);
+            });
+            request.catch(response => {
+                console.log(response);
+                setEmail("");
+                setPassword("");
+                setName("");
+                setImage("");
+                setLoading(false);
+            });
+        }
+    }
+   
     return(
         <>
             <Header>
@@ -10,12 +50,12 @@ export default function SignUp(){
                 </Logo>
             </Header>
             <UserActs>
-                    <InputLogIn placeholder="email" />
-                    <InputLogIn placeholder="senha"/>
-                    <InputLogIn placeholder="nome" />
-                    <InputLogIn placeholder="foto"/>
-                    <ButtonLogIn>Cadastrar</ButtonLogIn>
-                    <div>Já tem uma conta? Faça login!</div>
+                    <InputLogIn disabled={loading} onChange={e=>setEmail(e.target.value)} value={email} placeholder="email" />
+                    <InputLogIn disabled={loading} onChange={e=>setPassword(e.target.value)} value={password} placeholder="senha" type="password"/>
+                    <InputLogIn disabled={loading} onChange={e=>setName(e.target.value)} value={name} placeholder="nome" />
+                    <InputLogIn disabled={loading} onChange={e=>setImage(e.target.value)} value={image} placeholder="foto"/>
+                    {loading?<ButtonLogIn><Loader type="ThreeDots" color="#FFFFFF" height={60} width={60} /></ButtonLogIn>:<ButtonLogIn onClick={newUser}>Cadastrar</ButtonLogIn> }
+                    <NavLink to="/">Já tem uma conta? Faça login!</NavLink>
             </UserActs>
         </>    
     );
@@ -68,4 +108,14 @@ const InputLogIn = styled.input`
 const ButtonLogIn = styled.button`
     background-color:#52B6FF;
     color: #FFFFFF;
+`;
+const NavLink = styled(Link)`
+    font-size: 13.976px;
+    line-height: 17px;
+    text-decoration-line: underline;
+    color: #52B6FF;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
 `;

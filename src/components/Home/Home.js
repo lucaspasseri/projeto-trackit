@@ -1,21 +1,55 @@
-import styled from "styled-components";
+import styled from 'styled-components';
+import React from 'react';
+import axios from 'axios';
+import { Link, useHistory } from 'react-router-dom';
+import Loader from "react-loader-spinner";
 
-export default function Home(){
+
+export default function Home({setToken}){
+    let history = useHistory();
+
+    const [email, setEmail] = React.useState("");
+    const [password, setPassword] = React.useState("");
+    const [loading, setLoading] = React.useState(false);
+
+    function ClickLogIn(){  
+        if(email.length>0 && password.length>0){
+            setLoading(true);
+            const body = {
+                email: email,
+                password: password  
+            }
+            const request = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/login", body);
+    
+            request.then(response => {
+                setLoading(false);
+                console.log(response);
+                setToken(response.data.token);
+                history.push("/habitos");
+            });
+            request.catch(response => {
+                setLoading(false);
+                setEmail("");
+                setPassword("");
+                console.log(response);
+            });   
+        }
+    }
+
     return(
             <>
                 <Header>
                     <Logo>
                         <ImageLogo src="https://thumbs.dreamstime.com/b/growing-graph-d-histogram-green-arrow-32612397.jpg"/>
-                        <ImageLogo src="https://images.ctfassets.net/zsv3d0ugroxu/4p1Y4eUTpHQW5OwNt22qGy/9da0eb52fa76dbf7666c67dafaaac5b7/Logo_TrackIt"/>
+                        <TextLogo>TrackIt</TextLogo>
                     </Logo>
                 </Header>
                 <UserActs>
-                    <InputLogIn placeholder="email" />
-                    <InputLogIn placeholder="senha"/>
-                    <ButtonLogIn>Entrar</ButtonLogIn>
-                    <div>Não tem uma conta? Cadastre-se!</div>
+                    <InputLogIn disabled={loading} onChange={e => setEmail(e.target.value)} value={email} placeholder="email" />
+                    <InputLogIn disabled={loading} type="password" onChange={e =>setPassword(e.target.value)} value={password} placeholder="senha"/>
+                    {loading?<ButtonLogIn><Loader type="ThreeDots" color="#FFFFFF" height={60} width={60} /></ButtonLogIn>:<ButtonLogIn onClick={ClickLogIn} >Entrar</ButtonLogIn> }
+                    <NavLink to="/cadastro">Não tem uma conta? Cadastre-se!</NavLink>
                 </UserActs>
-
             </>
     );
 }
@@ -32,6 +66,15 @@ const Logo = styled.div`
 const ImageLogo = styled.img`
     width: 160px;
 `;
+const TextLogo = styled.div`
+    font-family: 'Playball', cursive;
+    font-size: 38.982px;
+    line-height: 49px;
+    color: #126ba5;
+    width: 100%;
+    display: flex;
+    padding-left: 30px;
+`;
 
 const UserActs = styled.div`
     display: flex;
@@ -47,17 +90,6 @@ const UserActs = styled.div`
         font-size: 19.976px;
         line-height: 25px;
     }
-
-    div {
-        font-size: 13.976px;
-        line-height: 17px;
-        text-decoration-line: underline;
-        color: #52B6FF;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        border: none;
-    }
 `;
 const InputLogIn = styled.input`
     padding-left: 10px;
@@ -68,4 +100,17 @@ const InputLogIn = styled.input`
 const ButtonLogIn = styled.button`
     background-color:#52B6FF;
     color: #FFFFFF;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+`;
+const NavLink = styled(Link)`
+    font-size: 13.976px;
+    line-height: 17px;
+    text-decoration-line: underline;
+    color: #52B6FF;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
 `;

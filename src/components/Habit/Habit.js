@@ -28,7 +28,7 @@ const Header = styled.div`
     background: #126BA5;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15);
     position: fixed;
-    width: 100%;
+    width:375px;
     top: 0;
     left: 0;
     display: flex; 
