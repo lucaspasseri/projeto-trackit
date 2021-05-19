@@ -5,7 +5,7 @@ import { Link, useHistory } from 'react-router-dom';
 import Loader from "react-loader-spinner";
 
 
-export default function Home({setToken}){
+export default function Home({setUser}){
     let history = useHistory();
 
     const [email, setEmail] = React.useState("");
@@ -16,15 +16,22 @@ export default function Home({setToken}){
         if(email.length>0 && password.length>0){
             setLoading(true);
             const body = {
-                email: email,
-                password: password  
+                email,
+                password 
             }
             const request = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/login", body);
     
             request.then(response => {
                 setLoading(false);
-                console.log(response);
-                setToken(response.data.token);
+                setUser({
+                    email: response.data.email,
+                    id: response.data.id,
+                    image: response.data.image,
+                    name: response.data.name,
+                    password: response.data.password,
+                    token: response.data.token,
+
+                });
                 history.push("/habitos");
             });
             request.catch(response => {
@@ -32,6 +39,7 @@ export default function Home({setToken}){
                 setEmail("");
                 setPassword("");
                 console.log(response);
+                alert("E-mail ou senha incorretos.");
             });   
         }
     }
@@ -62,18 +70,21 @@ const Header = styled.div`
 `;
 const Logo = styled.div`
     width: 180px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 `;
 const ImageLogo = styled.img`
     width: 160px;
 `;
 const TextLogo = styled.div`
     font-family: 'Playball', cursive;
-    font-size: 38.982px;
-    line-height: 49px;
+    font-size: 68.982px;
+    line-height: 86px;
     color: #126ba5;
     width: 100%;
     display: flex;
-    padding-left: 30px;
+    justify-content: center;
 `;
 
 const UserActs = styled.div`

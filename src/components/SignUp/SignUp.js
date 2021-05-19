@@ -46,7 +46,7 @@ export default function SignUp(){
             <Header>
                 <Logo>
                     <ImageLogo src="https://thumbs.dreamstime.com/b/growing-graph-d-histogram-green-arrow-32612397.jpg"/>
-                    <ImageLogo src="https://images.ctfassets.net/zsv3d0ugroxu/4p1Y4eUTpHQW5OwNt22qGy/9da0eb52fa76dbf7666c67dafaaac5b7/Logo_TrackIt"/>
+                    <TextLogo>TrackIt</TextLogo>
                 </Logo>
             </Header>
             <UserActs>
@@ -68,10 +68,22 @@ const Header = styled.div`
     align-items: center;
 `;
 const Logo = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     width: 180px;
 `;
 const ImageLogo = styled.img`
     width: 160px;
+`;
+const TextLogo = styled.div`
+    font-family: 'Playball', cursive;
+    font-size: 68.982px;
+    line-height: 86px;
+    color: #126ba5;
+    width: 100%;
+    display: flex;
+    justify-content: center;
 `;
 const UserActs = styled.div`
     display: flex;
