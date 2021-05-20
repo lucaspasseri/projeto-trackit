@@ -11,7 +11,7 @@ import UserContext from '../../contexts/UserContext';
 export default function App(){
     const [user, setUser] = React.useState(null);
     if(user!== null){
-        //console.log(user);
+        console.log(user);
     }
    
     return(

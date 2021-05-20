@@ -1,18 +1,42 @@
 import styled from 'styled-components';
-import React, {useContext, useState} from 'react';
+import React, {useContext, useState, useEffect} from 'react';
 import { Link } from 'react-router-dom';
+import { TrashOutline } from 'react-ionicons'
+import axios from  'axios';
+import Loader from "react-loader-spinner";
+
+import WeekDay from "../WeekDay/WeekDay";
 
 import UserContext from '../../contexts/UserContext';
 
 export default function Habit(){
-
+    const [habitsList, setHabitsList] = useState([]);
     const user = useContext(UserContext);
 
+    const config = {
+        headers: {
+            "Authorization": "Bearer "+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjYsImlhdCI6MTYyMTQ5Njg5MX0.bUNP6xFJqSG5eerr22yNAz-hTsf-1K4h7LyH9cVchwE"
+        }
+    }
+    
+    
+    useEffect(() => {
+		const request = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits", config);
+
+		request.then(response => {
+            const obj = response.data.map(item=>item);
+            setHabitsList(obj);
+		});
+        request.catch(response=>console.log(response));
+	}, []);
+
+    const [loading, setLoading] = useState(false);
     const [createNewHabit, setCreateNewHabit] =  useState(false);
     const [nameNewHabit, setNameNewHabit] = useState("");
+    const [selectedDays, setSelectedDays] = useState([false,false,false,false,false,false,false]);
     const [listHabits, setListHabits] = useState([]);
 
-    const weekDays = ["D", "S", "T", "Q", "Q", "S", "S"];
+    const weekDays = ["D", "S", "T", "Q", "Q", "S", "S"];   
 
     if(user === null){
         return(
@@ -33,11 +57,46 @@ export default function Habit(){
         }
     }
     function saveHabit(){
-        if(nameNewHabit.length !== ""){
-            setListHabits([...listHabits, nameNewHabit]);
-            setNameNewHabit("");
-            newHabit();
+        if(nameNewHabit.length >0 && selectedDays.filter(i => i===true).length > 0){
+            console.log(selectedDays, selectedDays.filter(i => i===true).length );
+            setLoading(true);
+            setListHabits([...listHabits, {
+                    name: nameNewHabit,
+                    weekdays: selectedDays
+                }
+            ])
+        
+            const days = [];
+            selectedDays.forEach((item,i) => {
+                if(item===true){
+                    days.push(i);
+                }
+            });
+            const body = {
+                name: nameNewHabit,
+                days: days
+            };
+
+            const request = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits", body, config);
+            request.then(response=>{
+                console.log(response);
+                setSelectedDays([false,false,false,false,false,false,false]);
+                setNameNewHabit("");
+                setLoading(false);
+                newHabit();
+            });
+            request.catch(error=>{
+                alert(error);
+                setLoading(false);
+            });
+        }else if(nameNewHabit.length ===0){
+            alert("Insira um nome para o seu hábito.");
+        }else if(selectedDays.filter(i => i===true).length===0){
+            alert("Escolha pelo menos um dia da semana.");
         }
+    }
+    function deleteHabit(){
+        alert();
     }
     
     return(
@@ -51,28 +110,117 @@ export default function Habit(){
                     <div>Meus hábitos</div>
                     <ButtonPlus onClick={newHabit}>+</ButtonPlus>
                 </Top>
-                {createNewHabit? <NewHabit>
-                    <InputNameHabit onChange={e=>setNameNewHabit(e.target.value)} value={nameNewHabit} placeholder="nome do hábito"></InputNameHabit>
-                    <WeekDays>{weekDays.map((item, i)=> <ButtonWeekDay key={i}>{item}</ButtonWeekDay>)}</WeekDays>
-                    <Buttons>
-                        <CancelButton onClick={newHabit}>Cancelar</CancelButton>
-                        <SaveButton onClick={saveHabit}>Salvar</SaveButton>
-                    </Buttons>
-
-                </NewHabit>: null}
-                {listHabits.length>0? listHabits.map(habit=><HabitCard>{habit}</HabitCard>):
+                {
+                    <NewHabit active={createNewHabit}>
+                        <InputNameHabit disabled={loading} onChange={e=>setNameNewHabit(e.target.value)} value={nameNewHabit} placeholder="nome do hábito"></InputNameHabit>
+                        <WeekDaysContainer>
+                            {(!createNewHabit && selectedDays.filter(i=>i===true).length===0)?null:weekDays.map((item, i)=><WeekDay disabled={loading} key={i} id={i} name={item} selectedDays={selectedDays} ></WeekDay>)}
+                        </WeekDaysContainer>
+                        <Buttons>
+                            <CancelButton onClick={newHabit}>Cancelar</CancelButton>
+                            {loading?
+                                <SaveButton><Loader type="ThreeDots" color="#FFFFFF" height={60} width={60} /></SaveButton>
+                            :
+                                <SaveButton onClick={saveHabit}>Salvar</SaveButton>
+                            }
+                        </Buttons>
+                    </NewHabit>
+                }
+                {habitsList.length>0? habitsList.map((habit,i)=>
+                <HabitCard key={i}>
+                    <NameContainer>
+                        <div>{habit.name}</div>
+                        <div onClick={deleteHabit}><TrashOutline></TrashOutline></div>
+                    </NameContainer>
+                    <DaysContainer>
+                        {weekDays.map((day,i)=> <Day key={i} status={habit.days.filter(item=>item===i).length>0}> {day}</Day>)}
+                    </DaysContainer>
+                </HabitCard>
+                ):
                     <div>Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!</div>}
             </Body>
             <Footer>
                 <div>Hábitos</div>
-                <div>Hoje</div>
+                <div>Hoje</div> 
                 <div>Histórico</div>
             </Footer>
         </>
     );
 }
 
-const WeekDays = styled.div`
+const DaysContainer = styled.div`
+    display: flex;
+    align-items: center;
+`;
+
+const NameContainer = styled.div`
+    display: flex;
+    justify-content: space-between;
+    height: 50%;
+    align-items: center;
+    font-family: 'Lexend Deca', sans-serif;
+    font-size: 19.976px;
+    line-height: 25px;
+    color: #666666;
+`;
+
+const Day = styled.div`
+    width: 30px;
+    height: 30px;
+    background: ${props=>props.status?"#cfcfcf":"#FFFFFF"};
+    border: 1px solid #D5D5D5;
+    border-radius: 5px;
+    font-family: 'Lexend Deca', sans-serif;
+    font-size: 19.976px;
+    line-height: 25px;
+    color: ${props=>props.status?"#FFFFFF":"#cfcfcf"};
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 4px;
+`;
+
+const HabitCard = styled.div`
+    width: 340px;
+    height: 91px;
+    background: #FFFFFF;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    padding: 14px;
+`;
+
+const Footer = styled.div`
+    width: 375px;
+    height: 70px;
+    background: #ffffff;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    font-family: 'Lexend Deca', sans-serif;
+    font-size: 17.976px;
+    line-height: 22px;
+    color: #52B6FF;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+`;
+
+const Body = styled.div`
+    margin-top: 70px;
+    margin-bottom: 70px;
+    border-bottom: 1px solid #f2f2f2;
+    background-color:#f2f2f2;
+    padding: 0 18px;
+    
+    > div {
+        font-family: 'Lexend Deca', sans-serif;
+        font-size: 17.976px;
+        line-height: 22px;
+        color: #666666;
+    }
+`;
+
+const WeekDaysContainer = styled.div`
     width: 100%;
     margin-top: 10px;
 
@@ -90,14 +238,6 @@ const Buttons = styled.div`
     *{
         margin-left: 20px;
     }
-`;
-
-const HabitCard = styled.div`
-    width: 340px;
-    height: 91px;
-    background: #FFFFFF;
-    border-radius: 5px;
-    margin-bottom: 10px;    
 `;
 
 const SaveButton = styled.button`
@@ -134,23 +274,11 @@ const InputNameHabit = styled.input`
    
 `; 
 
-const ButtonWeekDay = styled.button`
-    width: 30px;
-    height: 30px;
-    background: #FFFFFF;
-    border: 1px solid #D5D5D5;
-    border-radius: 5px;
-    font-family: 'Lexend Deca', sans-serif;
-    font-size: 19.976px;
-    line-height: 25px;
-    color: #DBDBDB;
-`;
-
 const NewHabit = styled.div`
     height: 180px;
     width: 340px;
     background-color: #ffffff;
-    display: flex;
+    display: ${props=>props.active?"flex":"none" };
     flex-direction: column;
     justify-content: center;
     align-items: center;
@@ -182,20 +310,7 @@ const ImageProfile = styled.img`
     width: 51px;
     border-radius:100%;
 `;
-const Body = styled.div`
-    margin-top: 70px;
-    background-color:#f2f2f2;
-    height: 100px;
-    height: 520px;
-    padding: 0 18px;
-    
-    div {
-        font-family: 'Lexend Deca', sans-serif;
-        font-size: 17.976px;
-        line-height: 22px;
-        color: #666666;
-    }
-`;
+
 const Top = styled.div`
     height: 85px;
     display: flex;
@@ -220,14 +335,3 @@ const ButtonPlus = styled.button`
     line-height: 34px;
 `;
 
-const Footer = styled.div`
-    height: 70px;
-    background: #FFFFFF;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    font-family: 'Lexend Deca', sans-serif;
-    font-size: 17.976px;
-    line-height: 22px;
-    color: #52B6FF;
-`;

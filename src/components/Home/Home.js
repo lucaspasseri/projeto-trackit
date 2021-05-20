@@ -55,7 +55,11 @@ export default function Home({setUser}){
                 <UserActs>
                     <InputLogIn disabled={loading} onChange={e => setEmail(e.target.value)} value={email} placeholder="email" />
                     <InputLogIn disabled={loading} type="password" onChange={e =>setPassword(e.target.value)} value={password} placeholder="senha"/>
-                    {loading?<ButtonLogIn><Loader type="ThreeDots" color="#FFFFFF" height={60} width={60} /></ButtonLogIn>:<ButtonLogIn onClick={ClickLogIn} >Entrar</ButtonLogIn> }
+                    {loading?
+                        <ButtonLogIn><Loader type="ThreeDots" color="#FFFFFF" height={60} width={60} /></ButtonLogIn>
+                        :
+                        <ButtonLogIn onClick={ClickLogIn} >Entrar</ButtonLogIn> 
+                    }
                     <NavLink to="/cadastro">Não tem uma conta? Cadastre-se!</NavLink>
                 </UserActs>
             </>
