@@ -6,6 +6,7 @@ import Home from '../Home/Home';
 import SignUp from '../SignUp/SignUp';
 import Habit from '../Habit/Habit';
 import Today from '../Today/Today';
+import Historic from '../Historic/Historic';
 import UserContext from '../../contexts/UserContext';
 
 export default function App(){
@@ -25,7 +26,7 @@ export default function App(){
                         <Route path="/cadastro" exact component={SignUp}/>
                         <Route path="/habitos" exact component={Habit}/>
                         <Route path="/hoje" exact component={Today}/>
-                        <Route path="/historico" exact component={Habit}/>
+                        <Route path="/historico" exact component={Historic}/>
                     </Switch>
                 </Page>    
             </BrowserRouter>

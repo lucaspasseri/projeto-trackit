@@ -6,6 +6,7 @@ import axios from  'axios';
 import Loader from "react-loader-spinner";
 
 import WeekDay from "../WeekDay/WeekDay";
+import Footer from '../Footer/Footer';
 
 import UserContext from '../../contexts/UserContext';
 
@@ -74,14 +75,18 @@ export default function Habit(){
                 console.log(response, habitsList);
                 setSelectedDays([false,false,false,false,false,false,false]);
                 setNameNewHabit("");
-                setLoading(false);
+                
                 newHabit();
                 const request = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits", config);
                 request.then(response=>{
                     const obj = response.data.map(item=>item);
                     setHabitsList(obj);
+                    setLoading(false);
                 });
-                request.catch(response=>console.log(response));
+                request.catch(response=>{
+                    console.log(response);
+                    setLoading(false);
+                });
             });
             request.catch(error=>{
                 alert(error);
@@ -95,6 +100,7 @@ export default function Habit(){
     }
     function deleteHabit(id){
         if(window.confirm("Você tem certeza?")){
+            setLoading(true);
             alert("Tchau, "+id);
             const request = axios.delete(
                 "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/"+id,
@@ -110,11 +116,18 @@ export default function Habit(){
                 request.then(response => {
                     const obj = response.data.map(item=>item);
                     setHabitsList(obj);
+                    setLoading(false);
                 });
-                request.catch(response=>console.log(response));
+                request.catch(response=>{
+                    console.log(response);
+                    setLoading(false);
+                });
 
             });
-            request.catch(response=>console.log(response));
+            request.catch(response=>{
+                console.log(response);
+                setLoading(false);
+            });
         }
     }
     
@@ -159,11 +172,7 @@ export default function Habit(){
                     <div>Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!</div>
                 }
             </Body>
-            <Footer>
-                <div>Hábitos</div>
-                <div>Hoje</div> 
-                <div>Histórico</div>
-            </Footer>
+            <Footer></Footer>
         </>
     );
 }
@@ -207,22 +216,6 @@ const HabitCard = styled.div`
     border-radius: 5px;
     margin-bottom: 10px;
     padding: 14px;
-`;
-
-const Footer = styled.div`
-    width: 375px;
-    height: 70px;
-    background: #ffffff;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    font-family: 'Lexend Deca', sans-serif;
-    font-size: 17.976px;
-    line-height: 22px;
-    color: #52B6FF;
-    position: fixed;
-    bottom: 0;
-    left: 0;
 `;
 
 const Body = styled.div`
