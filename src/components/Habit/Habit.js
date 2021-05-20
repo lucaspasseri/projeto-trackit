@@ -12,7 +12,6 @@ import UserContext from '../../contexts/UserContext';
 export default function Habit(){
     const [habitsList, setHabitsList] = useState([]);
     const user = useContext(UserContext);
-
     const config = {
         headers: {
             "Authorization": "Bearer "+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjYsImlhdCI6MTYyMTQ5Njg5MX0.bUNP6xFJqSG5eerr22yNAz-hTsf-1K4h7LyH9cVchwE"
@@ -34,7 +33,6 @@ export default function Habit(){
     const [createNewHabit, setCreateNewHabit] =  useState(false);
     const [nameNewHabit, setNameNewHabit] = useState("");
     const [selectedDays, setSelectedDays] = useState([false,false,false,false,false,false,false]);
-    const [listHabits, setListHabits] = useState([]);
 
     const weekDays = ["D", "S", "T", "Q", "Q", "S", "S"];   
 
@@ -58,13 +56,7 @@ export default function Habit(){
     }
     function saveHabit(){
         if(nameNewHabit.length >0 && selectedDays.filter(i => i===true).length > 0){
-            console.log(selectedDays, selectedDays.filter(i => i===true).length );
             setLoading(true);
-            setListHabits([...listHabits, {
-                    name: nameNewHabit,
-                    weekdays: selectedDays
-                }
-            ])
         
             const days = [];
             selectedDays.forEach((item,i) => {
@@ -79,11 +71,17 @@ export default function Habit(){
 
             const request = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits", body, config);
             request.then(response=>{
-                console.log(response);
+                console.log(response, habitsList);
                 setSelectedDays([false,false,false,false,false,false,false]);
                 setNameNewHabit("");
                 setLoading(false);
                 newHabit();
+                const request = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits", config);
+                request.then(response=>{
+                    const obj = response.data.map(item=>item);
+                    setHabitsList(obj);
+                });
+                request.catch(response=>console.log(response));
             });
             request.catch(error=>{
                 alert(error);
@@ -95,8 +93,29 @@ export default function Habit(){
             alert("Escolha pelo menos um dia da semana.");
         }
     }
-    function deleteHabit(){
-        alert();
+    function deleteHabit(id){
+        if(window.confirm("Você tem certeza?")){
+            alert("Tchau, "+id);
+            const request = axios.delete(
+                "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/"+id,
+                {
+                    headers: {
+                        "Authorization": "Bearer "+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjYsImlhdCI6MTYyMTQ5Njg5MX0.bUNP6xFJqSG5eerr22yNAz-hTsf-1K4h7LyH9cVchwE"
+                    }
+                }    
+            );
+            request.then(response=>{
+                const request = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits", config);
+
+                request.then(response => {
+                    const obj = response.data.map(item=>item);
+                    setHabitsList(obj);
+                });
+                request.catch(response=>console.log(response));
+
+            });
+            request.catch(response=>console.log(response));
+        }
     }
     
     return(
@@ -127,17 +146,18 @@ export default function Habit(){
                     </NewHabit>
                 }
                 {habitsList.length>0? habitsList.map((habit,i)=>
-                <HabitCard key={i}>
-                    <NameContainer>
-                        <div>{habit.name}</div>
-                        <div onClick={deleteHabit}><TrashOutline></TrashOutline></div>
-                    </NameContainer>
-                    <DaysContainer>
-                        {weekDays.map((day,i)=> <Day key={i} status={habit.days.filter(item=>item===i).length>0}> {day}</Day>)}
-                    </DaysContainer>
-                </HabitCard>
-                ):
-                    <div>Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!</div>}
+                    <HabitCard key={i}>
+                        <NameContainer>
+                            <div>{habit.name}</div>
+                            <div onClick={()=>deleteHabit(habit.id)}><TrashOutline></TrashOutline></div>
+                        </NameContainer>
+                        <DaysContainer>
+                            {weekDays.map((day,i)=> <Day key={i} status={habit.days.filter(item=>item===i).length>0}> {day}</Day>)}
+                        </DaysContainer>
+                    </HabitCard>)
+                    :
+                    <div>Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!</div>
+                }
             </Body>
             <Footer>
                 <div>Hábitos</div>
@@ -211,6 +231,7 @@ const Body = styled.div`
     border-bottom: 1px solid #f2f2f2;
     background-color:#f2f2f2;
     padding: 0 18px;
+    min-height: 520px;
     
     > div {
         font-family: 'Lexend Deca', sans-serif;
