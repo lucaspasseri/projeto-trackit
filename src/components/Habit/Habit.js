@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 import React, {useContext, useState, useEffect} from 'react';
-import { Link } from 'react-router-dom';
 import { TrashOutline } from 'react-ionicons'
 import axios from  'axios';
 import Loader from "react-loader-spinner";
@@ -38,16 +37,6 @@ export default function Habit(){
 
     const weekDays = ["D", "S", "T", "Q", "Q", "S", "S"];   
 
-    if(user === null){
-        return(
-            <>
-                <div>Relogar</div>
-                <Link to="/"><button>Home</button></Link>
-            </>
-            
-        );
-    }
-
     function newHabit(){
         if(createNewHabit===true){
             setCreateNewHabit(false);
@@ -71,14 +60,16 @@ export default function Habit(){
                 days: days
             };
 
+            
+
             const request = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits", body, config);
             request.then(response=>{
                 setSelectedDays([false,false,false,false,false,false,false]);
                 setNameNewHabit("");
-                
                 newHabit();
                 const request = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits", config);
                 request.then(response=>{
+                    
                     const obj = response.data.map(item=>item);
                     setHabitsList(obj);
                     setLoading(false);
@@ -140,7 +131,11 @@ export default function Habit(){
                     <NewHabit active={createNewHabit}>
                         <InputNameHabit disabled={loading} onChange={e=>setNameNewHabit(e.target.value)} value={nameNewHabit} placeholder="nome do hábito"></InputNameHabit>
                         <WeekDaysContainer>
-                            {(!createNewHabit && selectedDays.filter(i=>i===true).length===0)?null:weekDays.map((item, i)=><WeekDay disabled={loading} key={i} id={i} name={item} selectedDays={selectedDays} ></WeekDay>)}
+                            {(!createNewHabit && selectedDays.filter(i=>i===true).length===0)?
+                                null
+                            :
+                                weekDays.map((item, i)=><WeekDay disabled={loading} key={i} id={i} name={item} selectedDays={selectedDays} ></WeekDay>)
+                            }
                         </WeekDaysContainer>
                         <Buttons>
                             <CancelButton onClick={newHabit}>Cancelar</CancelButton>
@@ -157,7 +152,9 @@ export default function Habit(){
                         <HabitCard key={i}>
                             <NameContainer>
                                 <div>{habit.name}</div>
-                                <div onClick={()=>deleteHabit(habit.id)}><TrashOutline></TrashOutline></div>
+                                <div onClick={()=>deleteHabit(habit.id)}>
+                                    <TrashOutline width="18px"></TrashOutline>
+                                </div>
                             </NameContainer>
                             <DaysContainer>
                                 {weekDays.map((day,i)=> <Day key={i} status={habit.days.filter(item=>item===i).length>0}> {day}</Day>)}
@@ -186,6 +183,11 @@ const NameContainer = styled.div`
     font-size: 19.976px;
     line-height: 25px;
     color: #666666;
+
+    div:last-of-type{
+        margin-bottom: 18px;
+        margin-right: -6px;
+    }
 `;
 
 const Day = styled.div`
@@ -243,10 +245,6 @@ const Buttons = styled.div`
     width: 100%;
     justify-content: flex-end;
     margin-top:20px;
-    
-    *{
-        margin-left: 20px;
-    }
 `;
 
 const SaveButton = styled.button`
@@ -256,6 +254,9 @@ const SaveButton = styled.button`
     border-radius: 4.63636px;
     border: none;
     color: #FFFFFF;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 `;
 const CancelButton = styled.button`
     width: 84px;

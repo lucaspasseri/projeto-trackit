@@ -128,6 +128,9 @@ const InputLogIn = styled.input`
 const ButtonLogIn = styled.button`
     background-color:#52B6FF;
     color: #FFFFFF;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 `;
 const NavLink = styled(Link)`
     font-size: 13.976px;

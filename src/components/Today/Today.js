@@ -9,7 +9,6 @@ import UserContext from '../../contexts/UserContext';
 import Footer from '../Footer/Footer';
 
 export default function Today({setProgress}){
-
     const todayDate = dayjs().locale("pt-br").format('dddd');
     const {user} = useContext(UserContext);
     const [todayHabits, setTodayHabits] = useState([]);
