@@ -101,14 +101,8 @@ export default function Habit(){
     function deleteHabit(id){
         if(window.confirm("Você tem certeza?")){
             setLoading(true);
-            alert("Tchau, "+id);
             const request = axios.delete(
-                "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/"+id,
-                {
-                    headers: {
-                        "Authorization": "Bearer "+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjYsImlhdCI6MTYyMTQ5Njg5MX0.bUNP6xFJqSG5eerr22yNAz-hTsf-1K4h7LyH9cVchwE"
-                    }
-                }    
+                "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/"+id, config
             );
             request.then(response=>{
                 const request = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits", config);
@@ -170,11 +164,7 @@ export default function Habit(){
                             </DaysContainer>
                         </HabitCard>)
                     : 
-                        habitsList.length!==0?
-                            <div>Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!</div>
-                        :
-                            <div>Carregando...</div>
-                    
+                        <div>Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!</div>
                 }
             </Body>
             <Footer progress={progress}></Footer>

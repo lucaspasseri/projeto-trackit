@@ -11,7 +11,7 @@ import UserContext from '../../contexts/UserContext';
 
 export default function App(){
     const [user, setUser] = useState(null);
-    const [progress, setProgress] = useState(null);
+    const [progress, setProgress] = useState(0);
    
     return(
         <UserContext.Provider value={{user,progress}}>

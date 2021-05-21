@@ -45,7 +45,6 @@ export default function Today({setProgress}){
         }else {
             const request = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${item.id}/uncheck`,{}, config);
             request.then(response=>{
-                console.log(response);
                 const requestGet = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/today", config);
                 requestGet.then(response=>{
                     setTodayHabits(response.data);
@@ -70,10 +69,7 @@ export default function Today({setProgress}){
                             (todayHabits.filter(item=>item.done).length/todayHabits.length)*100>0?
                                 `${(todayHabits.filter(item=>item.done).length/todayHabits.length)*100}% dos hábitos concluidos`
                             :
-                                (todayHabits.filter(item=>item.done).length/todayHabits.length)*100===0?
-                                    "Nenhum hábito concluido ainda"
-                                :
-                                    "Carregando..."
+                                "Nenhum hábito concluido ainda"
                         }
                     </Subtitle>
                 </Top>
