@@ -32,7 +32,7 @@ export default function Home({setUser}){
                     token: response.data.token,
 
                 });
-                history.push("/habitos");
+                history.push("/hoje");
             });
             request.catch(response => {
                 setLoading(false);

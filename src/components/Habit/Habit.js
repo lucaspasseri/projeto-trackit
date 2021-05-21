@@ -12,10 +12,11 @@ import UserContext from '../../contexts/UserContext';
 
 export default function Habit(){
     const [habitsList, setHabitsList] = useState([]);
+    const [todayHabits, setTodayHabits] = useState([]);
     const user = useContext(UserContext);
     const config = {
         headers: {
-            "Authorization": "Bearer "+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjYsImlhdCI6MTYyMTQ5Njg5MX0.bUNP6xFJqSG5eerr22yNAz-hTsf-1K4h7LyH9cVchwE"
+            "Authorization": "Bearer "+user.token
         }
     }
     
@@ -28,6 +29,13 @@ export default function Habit(){
             setHabitsList(obj);
 		});
         request.catch(response=>console.log(response));
+
+        const promisse =axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/today",config);
+        promisse.then(response => {
+            setTodayHabits(response.data);
+		});
+        promisse.catch(response=>console.log(response));
+
 	}, []);
 
     const [loading, setLoading] = useState(false);
@@ -72,7 +80,6 @@ export default function Habit(){
 
             const request = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits", body, config);
             request.then(response=>{
-                console.log(response, habitsList);
                 setSelectedDays([false,false,false,false,false,false,false]);
                 setNameNewHabit("");
                 
@@ -172,7 +179,7 @@ export default function Habit(){
                     <div>Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!</div>
                 }
             </Body>
-            <Footer></Footer>
+            <Footer progress={(todayHabits.filter(item=>item.done).length/todayHabits.length)*100}></Footer>
         </>
     );
 }
