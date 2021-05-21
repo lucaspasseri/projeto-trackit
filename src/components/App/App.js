@@ -1,6 +1,6 @@
 import { BrowserRouter, Switch, Route} from 'react-router-dom';
 import styled from 'styled-components';
-import React from 'react';
+import {useState} from 'react';
 
 import Home from '../Home/Home';
 import SignUp from '../SignUp/SignUp';
@@ -10,13 +10,11 @@ import Historic from '../Historic/Historic';
 import UserContext from '../../contexts/UserContext';
 
 export default function App(){
-    const [user, setUser] = React.useState(null);
-    if(user!== null){
-        console.log(user);
-    }
+    const [user, setUser] = useState(null);
+    const [progress, setProgress] = useState(null);
    
     return(
-        <UserContext.Provider value={user}>
+        <UserContext.Provider value={{user,progress}}>
             <BrowserRouter>
                 <Page>
                     <Switch>
@@ -25,7 +23,9 @@ export default function App(){
                         </Route>
                         <Route path="/cadastro" exact component={SignUp}/>
                         <Route path="/habitos" exact component={Habit}/>
-                        <Route path="/hoje" exact component={Today}/>
+                        <Route path="/hoje" exact >
+                            <Today setProgress={setProgress}/>
+                        </Route>
                         <Route path="/historico" exact component={Historic}/>
                     </Switch>
                 </Page>    

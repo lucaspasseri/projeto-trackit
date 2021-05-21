@@ -12,8 +12,7 @@ import UserContext from '../../contexts/UserContext';
 
 export default function Habit(){
     const [habitsList, setHabitsList] = useState([]);
-    const [todayHabits, setTodayHabits] = useState([]);
-    const user = useContext(UserContext);
+    const {user, progress} = useContext(UserContext);
     const config = {
         headers: {
             "Authorization": "Bearer "+user.token
@@ -29,12 +28,6 @@ export default function Habit(){
             setHabitsList(obj);
 		});
         request.catch(response=>console.log(response));
-
-        const promisse =axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/today",config);
-        promisse.then(response => {
-            setTodayHabits(response.data);
-		});
-        promisse.catch(response=>console.log(response));
 
 	}, []);
 
@@ -165,21 +158,26 @@ export default function Habit(){
                         </Buttons>
                     </NewHabit>
                 }
-                {habitsList.length>0? habitsList.map((habit,i)=>
-                    <HabitCard key={i}>
-                        <NameContainer>
-                            <div>{habit.name}</div>
-                            <div onClick={()=>deleteHabit(habit.id)}><TrashOutline></TrashOutline></div>
-                        </NameContainer>
-                        <DaysContainer>
-                            {weekDays.map((day,i)=> <Day key={i} status={habit.days.filter(item=>item===i).length>0}> {day}</Day>)}
-                        </DaysContainer>
-                    </HabitCard>)
-                    :
-                    <div>Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!</div>
+                {habitsList.length>0? 
+                    habitsList.map((habit,i)=>
+                        <HabitCard key={i}>
+                            <NameContainer>
+                                <div>{habit.name}</div>
+                                <div onClick={()=>deleteHabit(habit.id)}><TrashOutline></TrashOutline></div>
+                            </NameContainer>
+                            <DaysContainer>
+                                {weekDays.map((day,i)=> <Day key={i} status={habit.days.filter(item=>item===i).length>0}> {day}</Day>)}
+                            </DaysContainer>
+                        </HabitCard>)
+                    : 
+                        habitsList.length!==0?
+                            <div>Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!</div>
+                        :
+                            <div>Carregando...</div>
+                    
                 }
             </Body>
-            <Footer progress={(todayHabits.filter(item=>item.done).length/todayHabits.length)*100}></Footer>
+            <Footer progress={progress}></Footer>
         </>
     );
 }

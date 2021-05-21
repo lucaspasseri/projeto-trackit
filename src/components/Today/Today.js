@@ -8,10 +8,10 @@ import UserContext from '../../contexts/UserContext';
 
 import Footer from '../Footer/Footer';
 
-export default function Today(){
+export default function Today({setProgress}){
 
     const todayDate = dayjs().locale("pt-br").format('dddd');
-    const user = useContext(UserContext);
+    const {user} = useContext(UserContext);
     const [todayHabits, setTodayHabits] = useState([]);
     const config = {
         headers: {
@@ -24,15 +24,17 @@ export default function Today(){
 
 		request.then(response => {
             setTodayHabits(response.data);
+            
 		});
         request.catch(response=>console.log(response));
 	}, []);
+
+    setProgress((todayHabits.filter(item=>item.done).length/todayHabits.length)*100);
 
     function habitDone(item){
         if(!item.done){
             const request = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${item.id}/check`,{},config);
             request.then(response=>{
-                console.log(response);
                 const requestGet = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/today", config);
                 requestGet.then(response=>{
                     setTodayHabits(response.data);
@@ -63,10 +65,15 @@ export default function Today(){
             <Body>
                 <Top>
                     <div>{todayDate}</div>
-                    <Subtitle status={todayHabits.filter(item=>item.done).length/todayHabits.length!==0}>
+                    <Subtitle status={todayHabits.filter(item=>item.done).length/todayHabits.length>0}>
                         {
-                            (todayHabits.filter(item=>item.done).length/todayHabits.length)*100===0?
-                                "Nenhum hábito concluido ainda": `${(todayHabits.filter(item=>item.done).length/todayHabits.length)*100}% dos hábitos concluidos`
+                            (todayHabits.filter(item=>item.done).length/todayHabits.length)*100>0?
+                                `${(todayHabits.filter(item=>item.done).length/todayHabits.length)*100}% dos hábitos concluidos`
+                            :
+                                (todayHabits.filter(item=>item.done).length/todayHabits.length)*100===0?
+                                    "Nenhum hábito concluido ainda"
+                                :
+                                    "Carregando..."
                         }
                     </Subtitle>
                 </Top>
