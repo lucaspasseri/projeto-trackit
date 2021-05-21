@@ -66,7 +66,7 @@ export default function Today({setProgress}){
                     <Subtitle status={todayHabits.filter(item=>item.done).length/todayHabits.length>0}>
                         {
                             (todayHabits.filter(item=>item.done).length/todayHabits.length)*100>0?
-                                `${(todayHabits.filter(item=>item.done).length/todayHabits.length)*100}% dos hábitos concluidos`
+                                `${((todayHabits.filter(item=>item.done).length/todayHabits.length)).toFixed(2)*100}% dos hábitos concluidos`
                             :
                                 "Nenhum hábito concluido ainda"
                         }
