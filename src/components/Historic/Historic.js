@@ -7,12 +7,13 @@ import Footer from '../Footer/Footer';
 
 export default function Historic(){
 
-    const {user, progress} = useContext(UserContext);
+    const { progress} = useContext(UserContext);
+    const userStorage = JSON.parse(localStorage.getItem("userStorage"));
     return(
         <>
             <Header>
                 <Title>TrackIt</Title>
-                <ImageProfile src={user.image}/>
+                <ImageProfile src={userStorage.image}/>
             </Header>
             <Body>
                 <Top>

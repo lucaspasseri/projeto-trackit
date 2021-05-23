@@ -13,7 +13,8 @@ export default function SignUp(){
     const [image, setImage] = useState("");
     const [loading, setLoading] = useState(false);
 
-    function newUser(){
+    function newUser(event){
+        event.preventDefault();
         if(name!== "" && email !== "" && password !== "" && image!== ""){
             const body = {
                 email,
@@ -52,16 +53,16 @@ export default function SignUp(){
                     <TextLogo>TrackIt</TextLogo>
                 </Logo>
             </Header>
-            <UserActs>
-                    <InputLogIn disabled={loading} onChange={e=>setEmail(e.target.value)} value={email} placeholder="email" />
-                    <InputLogIn disabled={loading} onChange={e=>setPassword(e.target.value)} value={password} placeholder="senha" type="password"/>
-                    <InputLogIn disabled={loading} onChange={e=>setName(e.target.value)} value={name} placeholder="nome" />
-                    <InputLogIn disabled={loading} onChange={e=>setImage(e.target.value)} value={image} placeholder="foto"/>
+            <UserActs onSubmit={newUser}>
+                    <InputLogIn disabled={loading} onChange={e=>setEmail(e.target.value)} value={email} placeholder="email" type="email" required/>
+                    <InputLogIn disabled={loading} onChange={e=>setPassword(e.target.value)} value={password} placeholder="senha" type="password" required/>
+                    <InputLogIn disabled={loading} onChange={e=>setName(e.target.value)} value={name} placeholder="nome" type="text" required/>
+                    <InputLogIn disabled={loading} onChange={e=>setImage(e.target.value)} value={image} placeholder="foto" type="url" required/>
                     {
                         loading?
                             <ButtonLogIn><Loader type="ThreeDots" color="#FFFFFF" height={60} width={60} /></ButtonLogIn>
                         :
-                            <ButtonLogIn onClick={newUser}>Cadastrar</ButtonLogIn> 
+                            <ButtonLogIn type="submit">Cadastrar</ButtonLogIn> 
                     }
                     <NavLink to="/home">Já tem uma conta? Faça login!</NavLink>
             </UserActs>

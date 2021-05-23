@@ -12,7 +12,8 @@ export default function Home({setUser}){
     const [password, setPassword] = React.useState("");
     const [loading, setLoading] = React.useState(false);
 
-    function ClickLogIn(){  
+    function ClickLogIn(event){
+        event.preventDefault();  
         if(email.length>0 && password.length>0){
             setLoading(true);
             const body = {
@@ -61,13 +62,13 @@ export default function Home({setUser}){
                         <TextLogo>TrackIt</TextLogo>
                     </Logo>
                 </Header>
-                <UserActs>
-                    <InputLogIn disabled={loading} onChange={e => setEmail(e.target.value)} value={email} placeholder="email" />
-                    <InputLogIn disabled={loading} type="password" onChange={e =>setPassword(e.target.value)} value={password} placeholder="senha"/>
+                <UserActs onSubmit={ClickLogIn}>
+                    <InputLogIn disabled={loading} onChange={e => setEmail(e.target.value)} value={email} placeholder="email" type="email" required/>
+                    <InputLogIn disabled={loading} onChange={e =>setPassword(e.target.value)} value={password} placeholder="senha" type="password" required/>
                     {loading?
                         <ButtonLogIn><Loader type="ThreeDots" color="#FFFFFF" height={60} width={60} /></ButtonLogIn>
                         :
-                        <ButtonLogIn onClick={ClickLogIn} >Entrar</ButtonLogIn> 
+                        <ButtonLogIn type="submit" >Entrar</ButtonLogIn> 
                     }
                     <NavLink to="/cadastro">Não tem uma conta? Cadastre-se!</NavLink>
                 </UserActs>
@@ -100,7 +101,7 @@ const TextLogo = styled.div`
     justify-content: center;
 `;
 
-const UserActs = styled.div`
+const UserActs = styled.form`
     display: flex;
     flex-direction:column;
     padding: 0 36px;

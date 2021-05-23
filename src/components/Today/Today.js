@@ -1,24 +1,26 @@
-import React, {useContext, useState, useEffect} from 'react';
+import React, { useState, useEffect} from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 import { CheckmarkOutline } from 'react-ionicons'
 import dayjs from "dayjs";
 import "dayjs/locale/pt-br";
-import UserContext from '../../contexts/UserContext';
 
 import Footer from '../Footer/Footer';
 
 export default function Today({setProgress}){
+    
     const todayDate = dayjs().locale("pt-br").format('dddd');
-    const {user} = useContext(UserContext);
     const [todayHabits, setTodayHabits] = useState();
-    const config = {
-        headers: {
-            "Authorization": "Bearer "+user.token
-        }
-    }
     
     useEffect(() => {
+        const userStorage = JSON.parse(localStorage.getItem("userStorage"));
+
+        const config = {
+            headers: {
+                "Authorization": "Bearer "+userStorage.token
+            }
+        }
+
 		const request = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/today", config);
 
 		request.then(response => {
@@ -27,6 +29,14 @@ export default function Today({setProgress}){
 		});
         request.catch(response=>console.log(response));
 	}, []);
+
+    const userStorage = JSON.parse(localStorage.getItem("userStorage"));
+
+    const config = {
+        headers: {
+            "Authorization": "Bearer "+userStorage.token
+        }
+    }
 
     if(todayHabits !== undefined){
         setProgress((todayHabits.filter(item=>item.done).length/todayHabits.length)*100);
@@ -68,14 +78,14 @@ export default function Today({setProgress}){
         <>
             <Header>
                 <Title>TrackIt</Title>
-                <ImageProfile src={user.image}/>
+                <ImageProfile src={userStorage.image}/>
             </Header>
             <Body>
                 <Top>
                     <div>{todayDate}</div>
                     <Subtitle status={undefinedHabits()}>
                         {todayHabits === undefined?
-                            "Carregando"
+                            "Carregando..."
                             :
                             ((todayHabits.filter(item=>item.done).length/todayHabits.length)*100>0?
                                 `${((todayHabits.filter(item=>item.done).length/todayHabits.length)).toFixed(2)*100}% dos hábitos concluidos`
@@ -87,7 +97,7 @@ export default function Today({setProgress}){
                 </Top>
                 <HabitsList>
                     {todayHabits === undefined?
-                        "Carregando"
+                        "Carregando..."
                         :
                         (todayHabits.length>0?
                             todayHabits.map(item=>

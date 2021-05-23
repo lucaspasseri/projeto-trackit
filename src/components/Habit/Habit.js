@@ -11,15 +11,16 @@ import UserContext from '../../contexts/UserContext';
 
 export default function Habit(){
     const [habitsList, setHabitsList] = useState();
-    const {user, progress} = useContext(UserContext);
-    const config = {
-        headers: {
-            "Authorization": "Bearer "+user.token
-        }
-    }
+    const { progress} = useContext(UserContext);
     
     
     useEffect(() => {
+        const userStorage = JSON.parse(localStorage.getItem("userStorage"));
+        const config = {
+            headers: {
+                "Authorization": "Bearer "+userStorage.token
+            }
+        }
 		const request = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits", config);
 
 		request.then(response => {
@@ -29,7 +30,14 @@ export default function Habit(){
         request.catch(response=>console.log(response));
 
 	}, []);
-
+    
+    const userStorage = JSON.parse(localStorage.getItem("userStorage"));
+    const config = {
+        headers: {
+            "Authorization": "Bearer "+userStorage.token
+        }
+    }
+    
     const [loading, setLoading] = useState(false);
     const [createNewHabit, setCreateNewHabit] =  useState(false);
     const [nameNewHabit, setNameNewHabit] = useState("");
@@ -45,7 +53,8 @@ export default function Habit(){
             setCreateNewHabit(true);
         }
     }
-    function saveHabit(){
+    function saveHabit(event){
+        event.preventDefault();
         if(nameNewHabit.length >0 && selectedDays.filter(i => i===true).length > 0){
             setLoading(true);
         
@@ -120,7 +129,7 @@ export default function Habit(){
         <>
             <Header>
                 <Title>TrackIt</Title>
-                <ImageProfile src={user.image}/>
+                <ImageProfile src={userStorage.image}/>
             </Header>
             <Body>
                 <Top>
@@ -128,8 +137,8 @@ export default function Habit(){
                     <ButtonPlus onClick={newHabit}>+</ButtonPlus>
                 </Top>
                 {
-                    <NewHabit active={createNewHabit}>
-                        <InputNameHabit disabled={loading} onChange={e=>setNameNewHabit(e.target.value)} value={nameNewHabit} placeholder="nome do hábito"></InputNameHabit>
+                    <NewHabit active={createNewHabit} onSubmit={saveHabit}>
+                        <InputNameHabit disabled={loading} onChange={e=>setNameNewHabit(e.target.value)} value={nameNewHabit} placeholder="nome do hábito" type="text" required></InputNameHabit>
                         <WeekDaysContainer>
                             {(!createNewHabit && selectedDays.filter(i=>i===true).length===0)?
                                 null
@@ -142,13 +151,13 @@ export default function Habit(){
                             {loading?
                                 <SaveButton><Loader type="ThreeDots" color="#FFFFFF" height={60} width={60} /></SaveButton>
                             :
-                                <SaveButton onClick={saveHabit}>Salvar</SaveButton>
+                                <SaveButton type="submit">Salvar</SaveButton>
                             }
                         </Buttons>
                     </NewHabit>
                 }
                 {habitsList === undefined?
-                    "Carregando..."
+                    <div>Carregando...</div>
                     :
                     (habitsList.length>0?
                         habitsList.map((habit,i)=>
@@ -238,9 +247,13 @@ const Body = styled.div`
 const WeekDaysContainer = styled.div`
     width: 100%;
     margin-top: 10px;
+    display: flex;
 
-    button {
+
+    div {
         margin-right: 5px;
+        display: flex;
+        justify-content: center;    
     }
 `;
 
@@ -262,7 +275,7 @@ const SaveButton = styled.button`
     justify-content: center;
     align-items: center;
 `;
-const CancelButton = styled.button`
+const CancelButton = styled.div`
     width: 84px;
     height: 35px;
     background: #FFFFFF;
@@ -288,7 +301,7 @@ const InputNameHabit = styled.input`
    
 `; 
 
-const NewHabit = styled.div`
+const NewHabit = styled.form`
     height: 180px;
     width: 340px;
     background-color: #ffffff;

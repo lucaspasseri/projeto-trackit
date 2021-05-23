@@ -20,7 +20,7 @@ export default function WeekDays({selectedDays, id, name}){
         );
 }
 
-const ButtonWeekDay = styled.button`
+const ButtonWeekDay = styled.div`
     width: 30px;
     height: 30px;
     background: ${props=>props.selected?"#cfcfcf":"#FFFFFF"};

@@ -1,12 +1,11 @@
-import {useState} from 'react';
 import {useHistory} from 'react-router-dom';
 
 export default function Page({user, setUser}){
     
-    const [savedUser, setSavedUser] = useState(localStorage.length>0);
+    
     let history = useHistory();
     let userStorage;
-    if(savedUser){
+    if(localStorage.length>0){
         userStorage = JSON.parse(localStorage.getItem("userStorage"));
         setUser(userStorage);
         history.push("/hoje"); 
