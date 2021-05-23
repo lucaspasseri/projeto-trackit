@@ -11,7 +11,7 @@ import Footer from '../Footer/Footer';
 export default function Today({setProgress}){
     const todayDate = dayjs().locale("pt-br").format('dddd');
     const {user} = useContext(UserContext);
-    const [todayHabits, setTodayHabits] = useState([]);
+    const [todayHabits, setTodayHabits] = useState();
     const config = {
         headers: {
             "Authorization": "Bearer "+user.token
@@ -28,8 +28,10 @@ export default function Today({setProgress}){
         request.catch(response=>console.log(response));
 	}, []);
 
-    setProgress((todayHabits.filter(item=>item.done).length/todayHabits.length)*100);
-
+    if(todayHabits !== undefined){
+        setProgress((todayHabits.filter(item=>item.done).length/todayHabits.length)*100);
+    }
+    
     function habitDone(item){
         if(!item.done){
             const request = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${item.id}/check`,{},config);
@@ -53,6 +55,14 @@ export default function Today({setProgress}){
             request.catch(response=>console.log(response));
         }
     }
+    function undefinedHabits(){
+        if(todayHabits === undefined){
+            return false
+        }else if((todayHabits.filter(item=>item.done).length/todayHabits.length)*100>0){
+            return true;
+        }
+        return false;
+    }
 
     return(  
         <>
@@ -63,30 +73,42 @@ export default function Today({setProgress}){
             <Body>
                 <Top>
                     <div>{todayDate}</div>
-                    <Subtitle status={todayHabits.filter(item=>item.done).length/todayHabits.length>0}>
-                        {
-                            (todayHabits.filter(item=>item.done).length/todayHabits.length)*100>0?
-                                `${((todayHabits.filter(item=>item.done).length/todayHabits.length)).toFixed(2)*100}% dos hábitos concluidos`
+                    <Subtitle status={undefinedHabits()}>
+                        {todayHabits === undefined?
+                            "Carregando"
                             :
+                            ((todayHabits.filter(item=>item.done).length/todayHabits.length)*100>0?
+                                `${((todayHabits.filter(item=>item.done).length/todayHabits.length)).toFixed(2)*100}% dos hábitos concluidos`
+                                :
                                 "Nenhum hábito concluido ainda"
+                            )
                         }
                     </Subtitle>
                 </Top>
                 <HabitsList>
-                    {todayHabits.length>0? todayHabits.map(item=>
-                        <HabitCard key={item.id}>
-                            <LeftSide>
-                                <HabitName>{item.name}</HabitName>
-                                <div><CurrentSequence status={item.currentSequence}>Sequência atual: <span>{item.currentSequence} dias</span></CurrentSequence></div>
-                                <div><HighestSequence status={item.currentSequence} highstatus={item.highestSequence}>Seu recorde: <span>{item.highestSequence} dias</span></HighestSequence></div>
-                            </LeftSide>
-                            <RightSide onClick={()=>habitDone(item)} done={item.done}>
-                                <CheckmarkOutline color='#ffffff' height="80px"  width="80px"/>
-                            </RightSide>
-                        </HabitCard>):<div></div>}
+                    {todayHabits === undefined?
+                        "Carregando"
+                        :
+                        (todayHabits.length>0?
+                            todayHabits.map(item=>
+                                <HabitCard key={item.id}>
+                                    <LeftSide>
+                                        <HabitName>{item.name}</HabitName>
+                                        <div><CurrentSequence status={item.currentSequence}>Sequência atual: <span>{item.currentSequence} dias</span></CurrentSequence></div>
+                                        <div><HighestSequence status={item.currentSequence} highstatus={item.highestSequence}>Seu recorde: <span>{item.highestSequence} dias</span></HighestSequence></div>
+                                    </LeftSide>
+                                    <RightSide onClick={()=>habitDone(item)} done={item.done}>
+                                        <CheckmarkOutline color='#ffffff' height="80px"  width="80px"/>
+                                    </RightSide>
+                                </HabitCard>
+                            )
+                        :
+                            <div></div>
+                        )
+                    }
                 </HabitsList>
             </Body>
-            <Footer progress={(todayHabits.filter(item=>item.done).length/todayHabits.length)*100}></Footer>
+            <Footer progress={todayHabits===undefined?0:(todayHabits.filter(item=>item.done).length/todayHabits.length)*100}></Footer>
         </>
     );
 }

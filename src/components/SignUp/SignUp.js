@@ -30,7 +30,7 @@ export default function SignUp(){
                 setName("");
                 setImage("");
                 setLoading(false);
-                history.push("/");
+                history.push("/home");
             });
             request.catch(response => {
                 console.log(response);
@@ -63,7 +63,7 @@ export default function SignUp(){
                         :
                             <ButtonLogIn onClick={newUser}>Cadastrar</ButtonLogIn> 
                     }
-                    <NavLink to="/">Já tem uma conta? Faça login!</NavLink>
+                    <NavLink to="/home">Já tem uma conta? Faça login!</NavLink>
             </UserActs>
         </>    
     );
@@ -85,7 +85,7 @@ const ImageLogo = styled.img`
     width: 160px;
 `;
 const TextLogo = styled.div`
-    font-family: 'Playball', cursive;
+    font-family: 'Playball';
     font-size: 68.982px;
     line-height: 86px;
     color: #126ba5;
@@ -93,7 +93,7 @@ const TextLogo = styled.div`
     display: flex;
     justify-content: center;
 `;
-const UserActs = styled.div`
+const UserActs = styled.form`
     display: flex;
     flex-direction:column;
     padding: 0 36px;

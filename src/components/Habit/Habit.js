@@ -10,7 +10,7 @@ import Footer from '../Footer/Footer';
 import UserContext from '../../contexts/UserContext';
 
 export default function Habit(){
-    const [habitsList, setHabitsList] = useState([]);
+    const [habitsList, setHabitsList] = useState();
     const {user, progress} = useContext(UserContext);
     const config = {
         headers: {
@@ -83,7 +83,7 @@ export default function Habit(){
                 alert(error);
                 setLoading(false);
             });
-        }else if(nameNewHabit.length ===0){
+        }else if(nameNewHabit.length === 0){
             alert("Insira um nome para o seu hábito.");
         }else if(selectedDays.filter(i => i===true).length===0){
             alert("Escolha pelo menos um dia da semana.");
@@ -147,8 +147,11 @@ export default function Habit(){
                         </Buttons>
                     </NewHabit>
                 }
-                {habitsList.length>0? 
-                    habitsList.map((habit,i)=>
+                {habitsList === undefined?
+                    "Carregando..."
+                    :
+                    (habitsList.length>0?
+                        habitsList.map((habit,i)=>
                         <HabitCard key={i}>
                             <NameContainer>
                                 <div>{habit.name}</div>
@@ -160,8 +163,9 @@ export default function Habit(){
                                 {weekDays.map((day,i)=> <Day key={i} status={habit.days.filter(item=>item===i).length>0}> {day}</Day>)}
                             </DaysContainer>
                         </HabitCard>)
-                    : 
+                        : 
                         <div>Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!</div>
+                    )
                 }
             </Body>
             <Footer progress={progress}></Footer>

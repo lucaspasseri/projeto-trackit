@@ -32,6 +32,15 @@ export default function Home({setUser}){
                     token: response.data.token,
 
                 });
+                localStorage.setItem('userStorage', JSON.stringify({
+                    email: response.data.email,
+                    id: response.data.id,
+                    image: response.data.image,
+                    name: response.data.name,
+                    password: response.data.password,
+                    token: response.data.token,
+
+                }));
                 history.push("/hoje");
             });
             request.catch(response => {
