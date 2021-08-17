@@ -1,57 +1,66 @@
-import styled from 'styled-components';
-import {useContext} from 'react';
+import styled from "styled-components";
+import React, {useContext, useEffect, useState} from "react";
+import axios from "axios";
 
-import UserContext from '../../contexts/UserContext';
+import UserContext from "../../contexts/UserContext";
 
-import Footer from '../Footer/Footer';
+import Footer from "../Footer/Footer";
+import TopBar from "../TopBar/TopBar";
 
 export default function Historic(){
 
-    const { progress} = useContext(UserContext);
-    const userStorage = JSON.parse(localStorage.getItem("userStorage"));
-    return(
-        <>
-            <Header>
-                <Title>TrackIt</Title>
-                <ImageProfile src={userStorage.image}/>
-            </Header>
-            <Body>
-                <Top>
-                    <div>Histórico</div>
-                </Top>
-                <ShowHistoric>Em breve você poderá ver o histórico dos seus hábitos aqui!</ShowHistoric>
-            </Body>
-            <Footer progress={progress}></Footer>
-        </>
-    );
+	const { user} = useContext(UserContext);
+	const [ historic, setHistoric ] = useState();
+
+	console.log(user);
+
+	const config = {
+		headers: {
+			"Authorization": "Bearer "+user.token
+		}
+	};
+
+	useEffect(() => {
+
+		// eslint-disable-next-line no-undef
+		const request = axios.get(`${process.env.REACT_APP_API_BASE_URL}/habits/history/daily`, config);
+
+		request.then(response => {
+			console.log(response.data);
+			setHistoric(response.data);
+		});
+		request.catch(response=>console.log(response));
+	}, []);
+
+	const days = historic?.map(item =>item.day);
+	const habits = historic?.map(item => item.habits);
+
+	return(
+		<>
+			<TopBar user={user}/>
+			<Body>
+				<Top>
+					<div>Histórico</div>
+				</Top>
+				<StyleHistoric>
+					{!historic?
+						"Em breve você poderá ver o histórico dos seus hábitos aqui!"
+						:
+						days?.map((item, i)=> <div key={i}>{item}</div>)
+					}
+					<div>
+						{
+							habits?.map((item,i)=> <div key={i}>{item[i].name}</div>)
+						}
+					</div>
+				</StyleHistoric>
+			</Body>
+			<Footer/>
+		</>
+	);
 }
-const ShowHistoric = styled.div`
+const StyleHistoric = styled.div`
 
-`;
-
-const Header = styled.div`
-    height: 70px;
-    background: #126BA5;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15);
-    position: fixed;
-    width:375px;
-    top: 0;
-    left: 0;
-    display: flex; 
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 18px;
-`;
-const Title = styled.div`
-    font-family: 'Playball', cursive;
-    font-size: 38.982px;
-    line-height: 49px;
-    color: #FFFFFF;
-`;
-const ImageProfile = styled.img`
-    height: 51px;
-    width: 51px;
-    border-radius:100%;
 `;
 
 const Top = styled.div`

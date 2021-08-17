@@ -1,29 +1,34 @@
-import styled from 'styled-components';
-import {Link} from 'react-router-dom';
-import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
+import styled from "styled-components";
+import {Link} from "react-router-dom";
+import React, {useContext} from "react";
+import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 
-import 'react-circular-progressbar/dist/styles.css';
+import "react-circular-progressbar/dist/styles.css";
+import UserContext from "../../contexts/UserContext";
+    
 
-export default function Footer({progress}){
+export default function Footer(){
 
-    return(
-        <FooterContainer>
-            <StyledLink to="/habitos"><div>Hábitos</div></StyledLink>
-            <StyledLink to="/hoje"><CustomDiv><CircularProgressbar
-                value={progress}
-                text={"Hoje"}
-                background
-                backgroundPadding={6}
-                styles={buildStyles({
-                    backgroundColor:  "#52B6FF",
-                    textColor: "#fff",
-                    pathColor: "#fff",
-                    trailColor: "transparent"
-                })} /></CustomDiv>
-            </StyledLink> 
-            <StyledLink to="/historico"><div>Histórico</div></StyledLink>
-        </FooterContainer>
-    );
+	const {progress} = useContext(UserContext);
+
+	return(
+		<FooterContainer>
+			<StyledLink to="/habitos"><div>Hábitos</div></StyledLink>
+			<StyledLink to="/hoje"><CustomDiv><CircularProgressbar
+				value={progress}
+				text={"Hoje"}
+				background
+				backgroundPadding={6}
+				styles={buildStyles({
+					backgroundColor:  "#52B6FF",
+					textColor: "#fff",
+					pathColor: "#fff",
+					trailColor: "transparent"
+				})} /></CustomDiv>
+			</StyledLink> 
+			<StyledLink to="/historico"><div>Histórico</div></StyledLink>
+		</FooterContainer>
+	);
 }
 const CustomDiv = styled.div`
     height: 150px;

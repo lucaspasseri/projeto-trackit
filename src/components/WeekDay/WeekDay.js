@@ -1,23 +1,30 @@
-import styled from 'styled-components';
-import { useState } from 'react';
+import styled from "styled-components";
+import React, { useState } from "react";
+import PropTypes from "prop-types";
+
+WeekDays.propTypes = {
+	id: PropTypes.number,
+	name: PropTypes.string,
+	selectedDays: PropTypes.arrayOf(PropTypes.bool)
+};
 
 export default function WeekDays({selectedDays, id, name}){
 
-    const [dayState, setDayState] = useState(false);
+	const [dayState, setDayState] = useState(false);
 
-    function selectDay(){
-        if(dayState===false){
-            setDayState(true);
+	function selectDay(){
+		if(dayState===false){
+			setDayState(true);
 
-            selectedDays[id]=true;
-        }else {
-            setDayState(false);
-            selectedDays[id]=false;
-        }
-    }
-    return(
-        <ButtonWeekDay selected={dayState} onClick={selectDay}>{name}</ButtonWeekDay>
-        );
+			selectedDays[id]=true;
+		}else {
+			setDayState(false);
+			selectedDays[id]=false;
+		}
+	}
+	return(
+		<ButtonWeekDay selected={dayState} onClick={selectDay}>{name}</ButtonWeekDay>
+	);
 }
 
 const ButtonWeekDay = styled.div`

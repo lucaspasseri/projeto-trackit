@@ -1,126 +1,143 @@
-import React, { useState, useEffect} from 'react';
-import axios from 'axios';
-import styled from 'styled-components';
-import { CheckmarkOutline } from 'react-ionicons'
+import React, { useState, useEffect, useContext} from "react";
+import axios from "axios";
+import styled from "styled-components";
+import PropTypes from "prop-types";
+import { CheckmarkOutline } from "react-ionicons";
 import dayjs from "dayjs";
 import "dayjs/locale/pt-br";
+import UserContext from "../../contexts/UserContext";
 
-import Footer from '../Footer/Footer';
+import Footer from "../Footer/Footer";
+import TopBar from "../TopBar/TopBar";
+
+Today.propTypes = {
+	setProgress: PropTypes.func
+};
 
 export default function Today({setProgress}){
-    
-    const todayDate = dayjs().locale("pt-br").format('dddd');
-    const [todayHabits, setTodayHabits] = useState();
-    
-    useEffect(() => {
-        const userStorage = JSON.parse(localStorage.getItem("userStorage"));
 
-        const config = {
-            headers: {
-                "Authorization": "Bearer "+userStorage.token
-            }
-        }
+	const { user } = useContext(UserContext);
+    
+	const todayDate = dayjs().locale("pt-br").format("dddd");
+	const [todayHabits, setTodayHabits] = useState();
 
-		const request = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/today", config);
+	const userStorage = JSON.parse(localStorage.getItem("userStorage"));
+
+	const config = {
+		headers: {
+			"Authorization": "Bearer "+userStorage.token
+		}
+	};
+    
+	useEffect(() => {
+
+		// eslint-disable-next-line no-undef
+		const request = axios.get(`${process.env.REACT_APP_API_BASE_URL}/habits/today`, config);
 
 		request.then(response => {
-            setTodayHabits(response.data);
+			setTodayHabits(response.data);
             
 		});
-        request.catch(response=>console.log(response));
+		request.catch(response=>console.log(response));
 	}, []);
 
-    const userStorage = JSON.parse(localStorage.getItem("userStorage"));
+	
 
-    const config = {
-        headers: {
-            "Authorization": "Bearer "+userStorage.token
-        }
-    }
-
-    if(todayHabits !== undefined){
-        setProgress((todayHabits.filter(item=>item.done).length/todayHabits.length)*100);
-    }
+	if(todayHabits !== undefined){
+		setProgress((todayHabits.filter(item=>item.done).length/todayHabits.length)*100);
+	}
     
-    function habitDone(item){
-        if(!item.done){
-            const request = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${item.id}/check`,{},config);
-            request.then(response=>{
-                const requestGet = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/today", config);
-                requestGet.then(response=>{
-                    setTodayHabits(response.data);
-                });
-                requestGet.catch(response=>console.log(response));
-            });
-            request.catch(response=>console.log(response));
-        }else {
-            const request = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${item.id}/uncheck`,{}, config);
-            request.then(response=>{
-                const requestGet = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/today", config);
-                requestGet.then(response=>{
-                    setTodayHabits(response.data);
-                });
-                requestGet.catch(response=>console.log(response));
-            });
-            request.catch(response=>console.log(response));
-        }
-    }
-    function undefinedHabits(){
-        if(todayHabits === undefined){
-            return false
-        }else if((todayHabits.filter(item=>item.done).length/todayHabits.length)*100>0){
-            return true;
-        }
-        return false;
-    }
+	function habitDone(item){
+		if(!item.done){
+						
+			const request = 
+			// eslint-disable-next-line no-undef
+				axios.post(`${process.env.REACT_APP_API_BASE_URL}/habits/${item.id}/check`,{},config);
+			request.then(()=>{
 
-    return(  
-        <>
-            <Header>
-                <Title>TrackIt</Title>
-                <ImageProfile src={userStorage.image}/>
-            </Header>
-            <Body>
-                <Top>
-                    <div>{todayDate}</div>
-                    <Subtitle status={undefinedHabits()}>
-                        {todayHabits === undefined?
-                            "Carregando..."
-                            :
-                            ((todayHabits.filter(item=>item.done).length/todayHabits.length)*100>0?
-                                `${((todayHabits.filter(item=>item.done).length/todayHabits.length)).toFixed(2)*100}% dos hábitos concluidos`
-                                :
-                                "Nenhum hábito concluido ainda"
-                            )
-                        }
-                    </Subtitle>
-                </Top>
-                <HabitsList>
-                    {todayHabits === undefined?
-                        "Carregando..."
-                        :
-                        (todayHabits.length>0?
-                            todayHabits.map(item=>
-                                <HabitCard key={item.id}>
-                                    <LeftSide>
-                                        <HabitName>{item.name}</HabitName>
-                                        <div><CurrentSequence status={item.currentSequence}>Sequência atual: <span>{item.currentSequence} dias</span></CurrentSequence></div>
-                                        <div><HighestSequence status={item.currentSequence} highstatus={item.highestSequence}>Seu recorde: <span>{item.highestSequence} dias</span></HighestSequence></div>
-                                    </LeftSide>
-                                    <RightSide onClick={()=>habitDone(item)} done={item.done}>
-                                        <CheckmarkOutline color='#ffffff' height="80px"  width="80px"/>
-                                    </RightSide>
-                                </HabitCard>
-                            )
-                        :
-                            <div></div>
-                        )
-                    }
-                </HabitsList>
-            </Body>
-            <Footer progress={todayHabits===undefined?0:(todayHabits.filter(item=>item.done).length/todayHabits.length)*100}></Footer>
-        </>
-    );
+				const requestGet = 
+				// eslint-disable-next-line no-undef
+					axios.get(`${process.env.REACT_APP_API_BASE_URL}/habits/today`, config);
+				requestGet.then(response=>{
+					setTodayHabits(response.data);
+				});
+				requestGet.catch(response=>console.log(response));
+			});
+			request.catch(response=>console.log(response));
+		}else {
+
+			
+			const request = 
+				// eslint-disable-next-line no-undef
+				axios.post(`${process.env.REACT_APP_API_BASE_URL}/habits/${item.id}/uncheck`,{}, config);
+			request.then(()=>{
+
+				
+				const requestGet = 
+					// eslint-disable-next-line no-undef
+					axios.get(`${process.env.REACT_APP_API_BASE_URL}/habits/today`, config);
+
+				requestGet.then(response=>{
+					setTodayHabits(response.data);
+				});
+				requestGet.catch(response=>console.log(response));
+			});
+			request.catch(response=>console.log(response));
+		}
+	}
+	function undefinedHabits(){
+		if(todayHabits === undefined){
+			return false;
+		}else if((todayHabits.filter(item=>item.done).length/todayHabits.length)*100>0){
+			return true;
+		}
+		return false;
+	}
+
+	return(  
+		<>
+			<TopBar user={user}/>
+			<Body>
+				<Top>
+					<div>{todayDate}</div>
+					<Subtitle status={undefinedHabits()}>
+						{todayHabits === undefined?
+							"Carregando..."
+							:
+							((todayHabits.filter(item=>item.done).length/todayHabits.length)*100>0?
+								`${((todayHabits.filter(item=>item.done).length/todayHabits.length)).toFixed(2)*100}% dos hábitos concluidos`
+								:
+								"Nenhum hábito concluido ainda"
+							)
+						}
+					</Subtitle>
+				</Top>
+				<HabitsList>
+					{todayHabits === undefined?
+						"Carregando..."
+						:
+						(todayHabits.length>0?
+							todayHabits.map(item=>
+								<HabitCard key={item.id}>
+									<LeftSide>
+										<HabitName>{item.name}</HabitName>
+										<div><CurrentSequence status={item.currentSequence}>Sequência atual: <span>{item.currentSequence} dias</span></CurrentSequence></div>
+										<div><HighestSequence status={item.currentSequence} highstatus={item.highestSequence}>Seu recorde: <span>{item.highestSequence} dias</span></HighestSequence></div>
+									</LeftSide>
+									<RightSide onClick={()=>habitDone(item)} done={item.done}>
+										<CheckmarkOutline color='#ffffff' height="80px"  width="80px"/>
+									</RightSide>
+								</HabitCard>
+							)
+							:
+							<div></div>
+						)
+					}
+				</HabitsList>
+			</Body>
+			<Footer/>
+		</>
+	);
 }
 
 const HabitName = styled.div`
@@ -171,7 +188,7 @@ const RightSide = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    background: ${props=>props.done?'#8fc549':'#EBEBEB'};
+    background: ${props=>props.done?"#8fc549":"#EBEBEB"};
     border: 1px solid #E7E7E7;
     box-sizing: border-box;
     border-radius: 5px;
@@ -204,31 +221,6 @@ const Body = styled.div`
         line-height: 22px;
         color: #666666;
     }
-`;
-
-const Header = styled.div`
-    height: 70px;
-    background: #126BA5;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15);
-    position: fixed;
-    width:375px;
-    top: 0;
-    left: 0;
-    display: flex; 
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 18px;
-`;
-const Title = styled.div`
-    font-family: 'Playball', cursive;
-    font-size: 38.982px;
-    line-height: 49px;
-    color: #FFFFFF;
-`;
-const ImageProfile = styled.img`
-    height: 51px;
-    width: 51px;
-    border-radius:100%;
 `;
 
 const Top = styled.div`
