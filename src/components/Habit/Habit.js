@@ -3,7 +3,7 @@ import React, {useContext, useState, useEffect} from "react";
 import { TrashOutline } from "react-ionicons";
 import axios from  "axios";
 import Loader from "react-loader-spinner";
-import PropTypes from "prop-types";
+import { useHistory } from "react-router-dom";
 
 import TopBar from "../TopBar/TopBar";
 import WeekDay from "../WeekDay/WeekDay";
@@ -11,22 +11,36 @@ import Footer from "../Footer/Footer";
 
 import UserContext from "../../contexts/UserContext";
 
-Habit.propTypes = {
-	setProgress: PropTypes.func
-};
-
-export default function Habit(props){
-	const {setProgress} = props;
+export default function Habit(){
+	const history = useHistory();
 
 	const [habitsList, setHabitsList] = useState();
-	const {user} = useContext(UserContext);
 
+	const {user, setUser, setProgress} = useContext(UserContext);
 	const userStorage = JSON.parse(localStorage.getItem("userStorage"));
-	const config = {
-		headers: {
-			"Authorization": "Bearer "+userStorage.token
+
+	let config;
+
+	if(!user) {
+		if(!userStorage){
+			history.push("/");
+			return null;
+		}else{
+			setUser(userStorage);
+			config = {
+				headers: {
+					"Authorization": `Bearer ${userStorage.token}`
+				}
+			};
 		}
-	};
+		
+	} else {
+		config = {
+			headers: {
+				"Authorization": `Bearer ${user.token}`
+			}
+		};
+	}
     
 	useEffect(() => {
 
@@ -62,8 +76,8 @@ export default function Habit(props){
 			setLoading(true);
         
 			const days = [];
-			selectedDays.forEach((item,i) => {
-				if(item===true){
+			selectedDays.forEach((item, i) => {
+				if(item === true){
 					days.push(i);
 				}
 			});
@@ -76,12 +90,15 @@ export default function Habit(props){
 				// eslint-disable-next-line no-undef 
 				axios.post(`${process.env.REACT_APP_API_BASE_URL}/habits`, body, config);
 			request.then(()=>{
+
 				setSelectedDays([false,false,false,false,false,false,false]);
 				setNameNewHabit("");
 				newHabit();
+				
 				const request = 
 					// eslint-disable-next-line no-undef
 					axios.get(`${process.env.REACT_APP_API_BASE_URL}/habits`, config);
+
 				request.then(response=>{
 					setHabitsList(response.data);
 					setLoading(false);
@@ -94,6 +111,7 @@ export default function Habit(props){
 				const req = 
 					// eslint-disable-next-line no-undef
 					axios.get(`${process.env.REACT_APP_API_BASE_URL}/habits/today`, config);
+
 				req.then(response=>{
 					const aux = response.data;
 					setProgress((aux.filter(item=>item.done).length/aux.length)*100); 
@@ -110,17 +128,19 @@ export default function Habit(props){
 			});
 		}else if(nameNewHabit.length === 0){
 			alert("Insira um nome para o seu hábito.");
-		}else if(selectedDays.filter(i => i===true).length===0){
+		}else if(selectedDays.filter(i => i === true).length === 0){
 			alert("Escolha pelo menos um dia da semana.");
 		}
 	}
 	function deleteHabit(id){
 		if(window.confirm("Você tem certeza?")){
 			setLoading(true);
+
 			const request = axios.delete(
 				// eslint-disable-next-line no-undef
 				`${process.env.REACT_APP_API_BASE_URL}/habits/${id}`, config
 			);
+			
 			request.then(()=>{
 				const request = 
 					// eslint-disable-next-line no-undef
@@ -158,7 +178,7 @@ export default function Habit(props){
     
 	return(
 		<>
-			<TopBar user={user}/>
+			<TopBar/>
 			<Body>
 				<Top>
 					<div>Meus hábitos</div>

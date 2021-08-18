@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import React, {useContext, useEffect, useState} from "react";
 import axios from "axios";
+import { useHistory } from "react-router-dom";
 
 import UserContext from "../../contexts/UserContext";
 
@@ -8,17 +9,37 @@ import Footer from "../Footer/Footer";
 import TopBar from "../TopBar/TopBar";
 
 export default function Historic(){
+	const history = useHistory();
 
-	const { user} = useContext(UserContext);
+	const { user, setUser} = useContext(UserContext);
 	const [ historic, setHistoric ] = useState();
 
-	console.log(user);
+	const userStorage = JSON.parse(localStorage.getItem("userStorage"));
+	
+	const weekDays = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];  
 
-	const config = {
-		headers: {
-			"Authorization": "Bearer "+user.token
+	let config;
+
+	if(!user){
+		if(!userStorage){
+			history.push("/");
+			return null;
+		} else {
+			setUser(localStorage);
+			config = {
+				headers: {
+					"Authorization": `Bearer ${localStorage.token}`
+				}
+			};
 		}
-	};
+	} else {
+		config = {
+			headers: {
+				"Authorization": `Bearer ${user.token}`
+			}
+		};
+	}
+
 
 	useEffect(() => {
 
@@ -32,8 +53,38 @@ export default function Historic(){
 		request.catch(response=>console.log(response));
 	}, []);
 
-	const days = historic?.map(item =>item.day);
-	const habits = historic?.map(item => item.habits);
+	//const days = historic?.map(item =>item.day);
+	//const habits = historic?.map(item => item.habits);
+
+	const historico = historic?.map((item, i) => {
+		return (
+			<div key={i}>
+				<div>{item.day+" - "+weekDays[item.habits[0].weekDay]}</div>
+				<div className="day">
+					{
+						item.habits.map((habit, n) => {
+							return (
+								<div key={n} className="habit">
+									<div className="habit-name">
+										{habit.name}
+									</div>
+									<div>
+										{habit.done?
+											<span role="img" aria-label="correct">✅</span>
+											:
+											<span role="img" aria-label="wrong">❌</span>
+										}
+									</div>
+								</div>
+							);
+						})
+					}
+				</div>
+			</div>
+		);
+	});
+
+	console.log(historico);
 
 	return(
 		<>
@@ -43,16 +94,9 @@ export default function Historic(){
 					<div>Histórico</div>
 				</Top>
 				<StyleHistoric>
-					{!historic?
-						"Em breve você poderá ver o histórico dos seus hábitos aqui!"
-						:
-						days?.map((item, i)=> <div key={i}>{item}</div>)
+					{
+						historico
 					}
-					<div>
-						{
-							habits?.map((item,i)=> <div key={i}>{item[i].name}</div>)
-						}
-					</div>
 				</StyleHistoric>
 			</Body>
 			<Footer/>
@@ -60,7 +104,16 @@ export default function Historic(){
 	);
 }
 const StyleHistoric = styled.div`
+	
+	.day {
+		margin: 10px 0 20px 0;
+	}
 
+	.habit {
+		display: flex;
+		justify-content: space-between;
+		margin-bottom: 3px;
+	}
 `;
 
 const Top = styled.div`

@@ -1,16 +1,12 @@
 import styled from "styled-components";
-import React from "react";
+import React, {useContext} from "react";
 import axios from "axios";
 import { Link, useHistory } from "react-router-dom";
 import Loader from "react-loader-spinner";
-import PropTypes from "prop-types";
+import UserContext from "../../contexts/UserContext";
 
-Home.propTypes = {
-	setUser: PropTypes.func
-};
-
-export default function Home(props){
-	const {setUser} = props;
+export default function Home(){
+	const {setUser} = useContext(UserContext);
 	let history = useHistory();
 
 	const [email, setEmail] = React.useState("");

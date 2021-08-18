@@ -1,17 +1,30 @@
-import React from "react";
+import React, {useContext} from "react";
 import { Header, Title, ImageProfile } from "../Styles/Components";
-import PropTypes from "prop-types";
 import { LogOutOutline } from "react-ionicons";
 import { useHistory } from "react-router-dom";
+import UserContext from "../../contexts/UserContext";
 
-TopBar.propTypes = {
-	user: PropTypes.object
-};
-
-
-export default function TopBar(props) {
-	const {user} = props;
+export default function TopBar() {
 	const history = useHistory();
+
+	const {user, setUser} = useContext(UserContext);
+
+	const userStorage = JSON.parse(localStorage.getItem("userStorage"));
+
+	let activeUser;
+
+	if(!user){
+		if(!userStorage){
+			history.push("/");
+			return null;
+		} else {
+			setUser(userStorage);
+			activeUser = userStorage;
+		}
+		
+	} else {
+		activeUser = user;
+	}
 
 	function logOut(){
 		localStorage.clear();
@@ -21,7 +34,7 @@ export default function TopBar(props) {
 	return(
 		<Header>
 			<Title>TrackIt</Title>
-			<ImageProfile src={user.image}/>
+			<ImageProfile src={activeUser.image}/>
 			<LogOutOutline
 				color="white"
 				height="40px"

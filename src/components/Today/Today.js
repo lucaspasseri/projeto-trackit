@@ -1,33 +1,47 @@
 import React, { useState, useEffect, useContext} from "react";
 import axios from "axios";
 import styled from "styled-components";
-import PropTypes from "prop-types";
 import { CheckmarkOutline } from "react-ionicons";
 import dayjs from "dayjs";
 import "dayjs/locale/pt-br";
 import UserContext from "../../contexts/UserContext";
+import { useHistory } from "react-router-dom";
 
 import Footer from "../Footer/Footer";
 import TopBar from "../TopBar/TopBar";
 
-Today.propTypes = {
-	setProgress: PropTypes.func
-};
+export default function Today(){
+	const history = useHistory();
 
-export default function Today({setProgress}){
-
-	const { user } = useContext(UserContext);
+	const { user, setUser, setProgress } = useContext(UserContext);
     
 	const todayDate = dayjs().locale("pt-br").format("dddd");
 	const [todayHabits, setTodayHabits] = useState();
 
 	const userStorage = JSON.parse(localStorage.getItem("userStorage"));
 
-	const config = {
-		headers: {
-			"Authorization": "Bearer "+userStorage.token
+	let config;
+
+	if(!user) {
+		if(!userStorage){
+			history.push("/");
+			return null;
+		}else{
+			setUser(userStorage);
+			config = {
+				headers: {
+					"Authorization": `Bearer ${userStorage.token}`
+				}
+			};
 		}
-	};
+		
+	} else {
+		config = {
+			headers: {
+				"Authorization": `Bearer ${user.token}`
+			}
+		};
+	}
     
 	useEffect(() => {
 
@@ -35,13 +49,10 @@ export default function Today({setProgress}){
 		const request = axios.get(`${process.env.REACT_APP_API_BASE_URL}/habits/today`, config);
 
 		request.then(response => {
-			setTodayHabits(response.data);
-            
+			setTodayHabits(response.data);  
 		});
 		request.catch(response=>console.log(response));
 	}, []);
-
-	
 
 	if(todayHabits !== undefined){
 		setProgress((todayHabits.filter(item=>item.done).length/todayHabits.length)*100);
