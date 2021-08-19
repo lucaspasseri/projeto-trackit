@@ -6,7 +6,7 @@
 
 ## About
 <p>
-  Track it is habit tracking application.
+  Track it is habit tracking application that can help you doing the best with your time.
 </p>
 
 ### Pre-requisites
