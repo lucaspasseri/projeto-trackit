@@ -34,13 +34,19 @@ export default function TopBar() {
 	return(
 		<Header>
 			<Title>TrackIt</Title>
-			<ImageProfile src={activeUser.image}/>
-			<LogOutOutline
-				color="white"
-				height="40px"
-				width="40px"
-				onClick={logOut}
-			/>
+			<div className="user-xp">
+				<div>
+					<ImageProfile src={activeUser.image}/>
+				</div>
+				<div>
+					<LogOutOutline
+						color="white"
+						height="40px"
+						width="40px"
+						onClick={logOut}
+					/>
+				</div>
+			</div>
 		</Header>
 	);
 }
