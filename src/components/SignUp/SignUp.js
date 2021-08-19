@@ -1,73 +1,73 @@
-import styled from 'styled-components';
-import { useState} from 'react';
-import axios from 'axios';
+import styled from "styled-components";
+import React, {useState} from "react";
+import axios from "axios";
 import Loader from "react-loader-spinner";
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useHistory } from "react-router-dom";
 
 export default function SignUp(){
-    let history = useHistory();
+	let history = useHistory();
 
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [name, setName] = useState("");
-    const [image, setImage] = useState("");
-    const [loading, setLoading] = useState(false);
+	const [email, setEmail] = useState("");
+	const [password, setPassword] = useState("");
+	const [name, setName] = useState("");
+	const [image, setImage] = useState("");
+	const [loading, setLoading] = useState(false);
 
-    function newUser(event){
-        event.preventDefault();
-        if(name!== "" && email !== "" && password !== "" && image!== ""){
-            const body = {
-                email,
-                name,
-                image,
-                password
-            }
+	function newUser(event){
+		event.preventDefault();
+		if(name!== "" && email !== "" && password !== "" && image!== ""){
+			const body = {
+				email,
+				name,
+				image,
+				password
+			};
 
-            const request = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/sign-up", body);
-            setLoading(true);
-            request.then(response => {
-                setEmail("");
-                setPassword("");
-                setName("");
-                setImage("");
-                setLoading(false);
-                history.push("/home");
-            });
-            request.catch(response => {
-                console.log(response);
-                setEmail("");
-                setPassword("");
-                setName("");
-                setImage("");
-                setLoading(false);
-                alert("Ocorreu algum erro no cadastro.")
-            });
-        }
-    }
+			// eslint-disable-next-line no-undef
+			const request = axios.post(`${process.env.REACT_APP_API_BASE_URL}/auth/sign-up`, body);
+			setLoading(true);
+			request.then(()=> {
+				setEmail("");
+				setPassword("");
+				setName("");
+				setImage("");
+				setLoading(false);
+				history.push("/home");
+			});
+			request.catch(() => {
+				setEmail("");
+				setPassword("");
+				setName("");
+				setImage("");
+				setLoading(false);
+				alert("Ocorreu algum erro no cadastro.");
+			});
+		}
+	}
    
-    return(
-        <>
-            <Header>
-                <Logo>
-                    <ImageLogo src="https://thumbs.dreamstime.com/b/growing-graph-d-histogram-green-arrow-32612397.jpg"/>
-                    <TextLogo>TrackIt</TextLogo>
-                </Logo>
-            </Header>
-            <UserActs onSubmit={newUser}>
-                    <InputLogIn disabled={loading} onChange={e=>setEmail(e.target.value)} value={email} placeholder="email" type="email" required/>
-                    <InputLogIn disabled={loading} onChange={e=>setPassword(e.target.value)} value={password} placeholder="senha" type="password" required/>
-                    <InputLogIn disabled={loading} onChange={e=>setName(e.target.value)} value={name} placeholder="nome" type="text" required/>
-                    <InputLogIn disabled={loading} onChange={e=>setImage(e.target.value)} value={image} placeholder="foto" type="url" required/>
-                    {
-                        loading?
-                            <ButtonLogIn><Loader type="ThreeDots" color="#FFFFFF" height={60} width={60} /></ButtonLogIn>
-                        :
-                            <ButtonLogIn type="submit">Cadastrar</ButtonLogIn> 
-                    }
-                    <NavLink to="/home">Já tem uma conta? Faça login!</NavLink>
-            </UserActs>
-        </>    
-    );
+	return(
+		<>
+			<Header>
+				<Logo>
+					<ImageLogo src="https://thumbs.dreamstime.com/b/growing-graph-d-histogram-green-arrow-32612397.jpg"/>
+					<TextLogo>TrackIt</TextLogo>
+				</Logo>
+			</Header>
+			<UserActs onSubmit={newUser}>
+				<InputLogIn disabled={loading} onChange={e=>setEmail(e.target.value)} value={email} placeholder="email" type="email" required/>
+				<InputLogIn disabled={loading} onChange={e=>setPassword(e.target.value)} value={password} placeholder="senha" type="password" required/>
+				<InputLogIn disabled={loading} onChange={e=>setName(e.target.value)} value={name} placeholder="nome" type="text" required/>
+				<InputLogIn disabled={loading} onChange={e=>setImage(e.target.value)} value={image} placeholder="foto" type="url" required/>
+				{
+					loading?
+						<ButtonLogIn><Loader type="ThreeDots" color="#FFFFFF" height={60} width={60} /></ButtonLogIn>
+						:
+						<ButtonLogIn type="submit">Cadastrar</ButtonLogIn> 
+				}
+				<NavLink to="/home">Já tem uma conta? Faça login!</NavLink>
+			</UserActs>
+		</>    
+	);
 }
 
 const Header = styled.div`

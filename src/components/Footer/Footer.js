@@ -1,29 +1,75 @@
-import styled from 'styled-components';
-import {Link} from 'react-router-dom';
-import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
+import styled from "styled-components";
+import {Link} from "react-router-dom";
+import React, {useContext, useState, useEffect} from "react";
+import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
+import axios from "axios";
 
-import 'react-circular-progressbar/dist/styles.css';
+import "react-circular-progressbar/dist/styles.css";
+import UserContext from "../../contexts/UserContext";
+    
 
-export default function Footer({progress}){
+export default function Footer(){
 
-    return(
-        <FooterContainer>
-            <StyledLink to="/habitos"><div>Hábitos</div></StyledLink>
-            <StyledLink to="/hoje"><CustomDiv><CircularProgressbar
-                value={progress}
-                text={"Hoje"}
-                background
-                backgroundPadding={6}
-                styles={buildStyles({
-                    backgroundColor:  "#52B6FF",
-                    textColor: "#fff",
-                    pathColor: "#fff",
-                    trailColor: "transparent"
-                })} /></CustomDiv>
-            </StyledLink> 
-            <StyledLink to="/historico"><div>Histórico</div></StyledLink>
-        </FooterContainer>
-    );
+	const {user, setUser, progress, setProgress} = useContext(UserContext);
+	const [todayHabits, setTodayHabits] = useState();
+
+	const userStorage = JSON.parse(localStorage.getItem("userStorage"));
+
+	let config;
+
+	if(!user) {
+		if(!userStorage){
+			history.push("/");
+			return null;
+		} else {
+			setUser(userStorage);
+			config = {
+				headers: {
+					"Authorization": `Bearer ${userStorage.token}`
+				}
+			};
+		}	
+	} else {
+		config = {
+			headers: {
+				"Authorization": `Bearer ${user.token}`
+			}
+		};
+	}
+	
+	useEffect(() => {
+
+		// eslint-disable-next-line no-undef
+		const request = axios.get(`${process.env.REACT_APP_API_BASE_URL}/habits/today`, config);
+
+		request.then(response => {
+			setTodayHabits(response.data);  
+		});
+		request.catch(response=>console.log(response));
+	}, []);
+
+	if(todayHabits !== undefined){
+		setProgress((todayHabits.filter(item=>item.done).length/todayHabits.length)*100);
+	}
+
+	return(
+		<FooterContainer>
+			<StyledLink to="/habitos"><div>Hábitos</div></StyledLink>
+			<StyledLink to="/hoje"><CustomDiv><CircularProgressbar
+				value={progress}
+				text={"Hoje"}
+				background
+				backgroundPadding={6}
+				styles={buildStyles({
+					backgroundColor:  "#52B6FF",
+					textColor: "#fff",
+					pathColor: "#fff",
+					trailColor: "transparent"
+				})} /></CustomDiv>
+			</StyledLink> 
+			<StyledLink to="/historico"><div>Histórico</div></StyledLink>
+		</FooterContainer>
+	);
 }
 const CustomDiv = styled.div`
     height: 150px;
@@ -37,7 +83,6 @@ const StyledLink = styled(Link)`
 `;
 
 const FooterContainer = styled.div`
-    width: 375px;
     height: 70px;
     background: #ffffff;
     display: flex;
@@ -51,4 +96,8 @@ const FooterContainer = styled.div`
     left: 0;
     justify-content: space-around;
     padding: 0 15px;
+	width: 100vw;
+	@media screen and (max-width: 320px) {
+		width: 320px;
+	}
 `;

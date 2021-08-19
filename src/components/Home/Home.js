@@ -1,79 +1,82 @@
-import styled from 'styled-components';
-import React from 'react';
-import axios from 'axios';
-import { Link, useHistory } from 'react-router-dom';
+import styled from "styled-components";
+import React, {useContext} from "react";
+import axios from "axios";
+import { Link, useHistory } from "react-router-dom";
 import Loader from "react-loader-spinner";
+import UserContext from "../../contexts/UserContext";
 
+export default function Home(){
+	const {setUser} = useContext(UserContext);
+	let history = useHistory();
 
-export default function Home({setUser}){
-    let history = useHistory();
+	const [email, setEmail] = React.useState("");
+	const [password, setPassword] = React.useState("");
+	const [loading, setLoading] = React.useState(false);
 
-    const [email, setEmail] = React.useState("");
-    const [password, setPassword] = React.useState("");
-    const [loading, setLoading] = React.useState(false);
+	function ClickLogIn(event){
+		event.preventDefault();  
+		if(email.length>0 && password.length>0){
+			setLoading(true);
+			const body = {
+				email,
+				password 
+			};
 
-    function ClickLogIn(event){
-        event.preventDefault();  
-        if(email.length>0 && password.length>0){
-            setLoading(true);
-            const body = {
-                email,
-                password 
-            }
-            const request = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/login", body);
-    
-            request.then(response => {
-                setLoading(false);
-                setUser({
-                    email: response.data.email,
-                    id: response.data.id,
-                    image: response.data.image,
-                    name: response.data.name,
-                    password: response.data.password,
-                    token: response.data.token,
+			// eslint-disable-next-line no-undef
+			const request = axios.post(`${process.env.REACT_APP_API_BASE_URL}/auth/login`, body);
 
-                });
-                localStorage.setItem('userStorage', JSON.stringify({
-                    email: response.data.email,
-                    id: response.data.id,
-                    image: response.data.image,
-                    name: response.data.name,
-                    password: response.data.password,
-                    token: response.data.token,
+			request.then(response => {
+				setLoading(false);
+				setUser({
+					email: response.data.email,
+					id: response.data.id,
+					image: response.data.image,
+					name: response.data.name,
+					password: response.data.password,
+					token: response.data.token,
 
-                }));
-                history.push("/hoje");
-            });
-            request.catch(response => {
-                setLoading(false);
-                setEmail("");
-                setPassword("");
-                console.log(response);
-                alert("E-mail ou senha incorretos.");
-            });   
-        }
-    }
+				});
+				localStorage.setItem("userStorage", JSON.stringify({
+					email: response.data.email,
+					id: response.data.id,
+					image: response.data.image,
+					name: response.data.name,
+					password: response.data.password,
+					token: response.data.token,
 
-    return(
-            <>
-                <Header>
-                    <Logo>
-                        <ImageLogo src="https://thumbs.dreamstime.com/b/growing-graph-d-histogram-green-arrow-32612397.jpg"/>
-                        <TextLogo>TrackIt</TextLogo>
-                    </Logo>
-                </Header>
-                <UserActs onSubmit={ClickLogIn}>
-                    <InputLogIn disabled={loading} onChange={e => setEmail(e.target.value)} value={email} placeholder="email" type="email" required/>
-                    <InputLogIn disabled={loading} onChange={e =>setPassword(e.target.value)} value={password} placeholder="senha" type="password" required/>
-                    {loading?
-                        <ButtonLogIn><Loader type="ThreeDots" color="#FFFFFF" height={60} width={60} /></ButtonLogIn>
-                        :
-                        <ButtonLogIn type="submit" >Entrar</ButtonLogIn> 
-                    }
-                    <NavLink to="/cadastro">Não tem uma conta? Cadastre-se!</NavLink>
-                </UserActs>
-            </>
-    );
+				}));
+				history.push("/hoje");
+			});
+			request.catch(response => {
+				setLoading(false);
+				setEmail("");
+				setPassword("");
+				console.log(response);
+				alert("E-mail ou senha incorretos.");
+			});   
+		}
+	}
+
+	return(
+		<>
+			<Header>
+				<Logo>
+					<ImageLogo src="https://thumbs.dreamstime.com/b/growing-graph-d-histogram-green-arrow-32612397.jpg"/>
+					<TextLogo>TrackIt</TextLogo>
+				</Logo>
+			</Header>
+			<UserActs onSubmit={ClickLogIn}>
+				<InputLogIn disabled={loading} onChange={e => setEmail(e.target.value)} value={email} placeholder="email" type="email" required/>
+				<InputLogIn disabled={loading} onChange={e =>setPassword(e.target.value)} value={password} placeholder="senha" type="password" required/>
+				{loading?
+					<ButtonLogIn><Loader type="ThreeDots" color="#FFFFFF" height={60} width={60} /></ButtonLogIn>
+					:
+					<ButtonLogIn type="submit" >Entrar</ButtonLogIn> 
+				}
+				<NavLink to="/cadastro">Não tem uma conta? Cadastre-se!</NavLink>
+			</UserActs>
+		</>
+	);
 }
 
 const Header = styled.div`

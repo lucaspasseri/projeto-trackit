@@ -1,185 +1,234 @@
-import styled from 'styled-components';
-import React, {useContext, useState, useEffect} from 'react';
-import { TrashOutline } from 'react-ionicons'
-import axios from  'axios';
+import styled from "styled-components";
+import React, {useContext, useState, useEffect} from "react";
+import { TrashOutline } from "react-ionicons";
+import axios from  "axios";
 import Loader from "react-loader-spinner";
+import { useHistory } from "react-router-dom";
 
+import TopBar from "../TopBar/TopBar";
 import WeekDay from "../WeekDay/WeekDay";
-import Footer from '../Footer/Footer';
+import Footer from "../Footer/Footer";
+import { Top, Body } from "../Styles/Components";
 
-import UserContext from '../../contexts/UserContext';
+import UserContext from "../../contexts/UserContext";
 
 export default function Habit(){
-    const [habitsList, setHabitsList] = useState();
-    const { progress} = useContext(UserContext);
+	const history = useHistory();
+
+	const [habitsList, setHabitsList] = useState();
+
+	const {user, setUser, setProgress} = useContext(UserContext);
+	const userStorage = JSON.parse(localStorage.getItem("userStorage"));
+
+	let config;
+
+	if(!user) {
+		if(!userStorage){
+			history.push("/");
+			return null;
+		}else{
+			setUser(userStorage);
+			config = {
+				headers: {
+					"Authorization": `Bearer ${userStorage.token}`
+				}
+			};
+		}
+		
+	} else {
+		config = {
+			headers: {
+				"Authorization": `Bearer ${user.token}`
+			}
+		};
+	}
     
-    
-    useEffect(() => {
-        const userStorage = JSON.parse(localStorage.getItem("userStorage"));
-        const config = {
-            headers: {
-                "Authorization": "Bearer "+userStorage.token
-            }
-        }
-		const request = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits", config);
+	useEffect(() => {
+
+		// eslint-disable-next-line no-undef
+		const request = axios.get(`${process.env.REACT_APP_API_BASE_URL}/habits`, config);
 
 		request.then(response => {
-            const obj = response.data.map(item=>item);
-            setHabitsList(obj);
+			setHabitsList(response.data);
 		});
-        request.catch(response=>console.log(response));
+		request.catch(response=>console.log(response));
 
 	}, []);
     
-    const userStorage = JSON.parse(localStorage.getItem("userStorage"));
-    const config = {
-        headers: {
-            "Authorization": "Bearer "+userStorage.token
-        }
-    }
-    
-    const [loading, setLoading] = useState(false);
-    const [createNewHabit, setCreateNewHabit] =  useState(false);
-    const [nameNewHabit, setNameNewHabit] = useState("");
-    const [selectedDays, setSelectedDays] = useState([false,false,false,false,false,false,false]);
+	const [loading, setLoading] = useState(false);
+	const [createNewHabit, setCreateNewHabit] =  useState(false);
+	const [nameNewHabit, setNameNewHabit] = useState("");
+	const [selectedDays, setSelectedDays] = useState([false,false,false,false,false,false,false]);
 
-    const weekDays = ["D", "S", "T", "Q", "Q", "S", "S"];   
+	const weekDays = ["D", "S", "T", "Q", "Q", "S", "S"];   
 
-    function newHabit(){
-        if(createNewHabit===true){
-            setCreateNewHabit(false);
-        }
-        else {
-            setCreateNewHabit(true);
-        }
-    }
-    function saveHabit(event){
-        event.preventDefault();
-        if(nameNewHabit.length >0 && selectedDays.filter(i => i===true).length > 0){
-            setLoading(true);
+	function newHabit(){
+		if(createNewHabit===true){
+			setCreateNewHabit(false);
+		}
+		else {
+			setCreateNewHabit(true);
+		}
+	}
+
+	function saveHabit(event){
+		event.preventDefault();
+		if(nameNewHabit.length > 0 && selectedDays.filter(i => i === true).length > 0){
+			setLoading(true);
         
-            const days = [];
-            selectedDays.forEach((item,i) => {
-                if(item===true){
-                    days.push(i);
-                }
-            });
-            const body = {
-                name: nameNewHabit,
-                days: days
-            };
+			const days = [];
+			selectedDays.forEach((item, i) => {
+				if(item === true){
+					days.push(i);
+				}
+			});
+			const body = {
+				name: nameNewHabit,
+				days: days
+			};
 
-            
+			const request =
+				// eslint-disable-next-line no-undef 
+				axios.post(`${process.env.REACT_APP_API_BASE_URL}/habits`, body, config);
+			request.then(()=>{
 
-            const request = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits", body, config);
-            request.then(response=>{
-                setSelectedDays([false,false,false,false,false,false,false]);
-                setNameNewHabit("");
-                newHabit();
-                const request = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits", config);
-                request.then(response=>{
-                    
-                    const obj = response.data.map(item=>item);
-                    setHabitsList(obj);
-                    setLoading(false);
-                });
-                request.catch(response=>{
-                    console.log(response);
-                    setLoading(false);
-                });
-            });
-            request.catch(error=>{
-                alert(error);
-                setLoading(false);
-            });
-        }else if(nameNewHabit.length === 0){
-            alert("Insira um nome para o seu hábito.");
-        }else if(selectedDays.filter(i => i===true).length===0){
-            alert("Escolha pelo menos um dia da semana.");
-        }
-    }
-    function deleteHabit(id){
-        if(window.confirm("Você tem certeza?")){
-            setLoading(true);
-            const request = axios.delete(
-                "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/"+id, config
-            );
-            request.then(response=>{
-                const request = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits", config);
+				setSelectedDays([false,false,false,false,false,false,false]);
+				setNameNewHabit("");
+				newHabit();
+				
+				const request = 
+					// eslint-disable-next-line no-undef
+					axios.get(`${process.env.REACT_APP_API_BASE_URL}/habits`, config);
 
-                request.then(response => {
-                    const obj = response.data.map(item=>item);
-                    setHabitsList(obj);
-                    setLoading(false);
-                });
-                request.catch(response=>{
-                    console.log(response);
-                    setLoading(false);
-                });
+				request.then(response=>{
+					setHabitsList(response.data);
+					setLoading(false);
+				});
+				request.catch(response=>{
+					console.log(response);
+					setLoading(false);
+				});
 
-            });
-            request.catch(response=>{
-                console.log(response);
-                setLoading(false);
-            });
-        }
-    }
+				const req = 
+					// eslint-disable-next-line no-undef
+					axios.get(`${process.env.REACT_APP_API_BASE_URL}/habits/today`, config);
+
+				req.then(response=>{
+					const aux = response.data;
+					setProgress((aux.filter(item=>item.done).length/aux.length)*100); 
+					setLoading(false);
+				});
+				req.catch(response=>{
+					console.log(response);
+					setLoading(false);
+				});
+			});
+			request.catch(error=>{
+				alert(error);
+				setLoading(false);
+			});
+		}else if(nameNewHabit.length === 0){
+			alert("Insira um nome para o seu hábito.");
+		}else if(selectedDays.filter(i => i === true).length === 0){
+			alert("Escolha pelo menos um dia da semana.");
+		}
+	}
+	function deleteHabit(id){
+		if(window.confirm("Você tem certeza?")){
+			setLoading(true);
+
+			const request = axios.delete(
+				// eslint-disable-next-line no-undef
+				`${process.env.REACT_APP_API_BASE_URL}/habits/${id}`, config
+			);
+			
+			request.then(()=>{
+				const request = 
+					// eslint-disable-next-line no-undef
+					axios.get(`${process.env.REACT_APP_API_BASE_URL}/habits`, config);
+
+				request.then(response => {
+					setHabitsList(response.data);
+					setLoading(false);
+				});
+				request.catch(response=>{
+					console.log(response);
+					setLoading(false);
+				});
+
+				const req = 
+					// eslint-disable-next-line no-undef
+					axios.get(`${process.env.REACT_APP_API_BASE_URL}/habits/today`, config);
+				req.then(response=>{
+					const aux = response.data;
+					setProgress((aux.filter(item=>item.done).length/aux.length)*100); 
+					setLoading(false);
+				});
+				req.catch(response=>{
+					console.log(response);
+					setLoading(false);
+				});
+
+			});
+			request.catch(response=>{
+				console.log(response);
+				setLoading(false);
+			});
+		}
+	}
     
-    return(
-        <>
-            <Header>
-                <Title>TrackIt</Title>
-                <ImageProfile src={userStorage.image}/>
-            </Header>
-            <Body>
-                <Top>
-                    <div>Meus hábitos</div>
-                    <ButtonPlus onClick={newHabit}>+</ButtonPlus>
-                </Top>
-                {
-                    <NewHabit active={createNewHabit} onSubmit={saveHabit}>
-                        <InputNameHabit disabled={loading} onChange={e=>setNameNewHabit(e.target.value)} value={nameNewHabit} placeholder="nome do hábito" type="text" required></InputNameHabit>
-                        <WeekDaysContainer>
-                            {(!createNewHabit && selectedDays.filter(i=>i===true).length===0)?
-                                null
-                            :
-                                weekDays.map((item, i)=><WeekDay disabled={loading} key={i} id={i} name={item} selectedDays={selectedDays} ></WeekDay>)
-                            }
-                        </WeekDaysContainer>
-                        <Buttons>
-                            <CancelButton onClick={newHabit}>Cancelar</CancelButton>
-                            {loading?
-                                <SaveButton><Loader type="ThreeDots" color="#FFFFFF" height={60} width={60} /></SaveButton>
-                            :
-                                <SaveButton type="submit">Salvar</SaveButton>
-                            }
-                        </Buttons>
-                    </NewHabit>
-                }
-                {habitsList === undefined?
-                    <div>Carregando...</div>
-                    :
-                    (habitsList.length>0?
-                        habitsList.map((habit,i)=>
-                        <HabitCard key={i}>
-                            <NameContainer>
-                                <div>{habit.name}</div>
-                                <div onClick={()=>deleteHabit(habit.id)}>
-                                    <TrashOutline width="18px"></TrashOutline>
-                                </div>
-                            </NameContainer>
-                            <DaysContainer>
-                                {weekDays.map((day,i)=> <Day key={i} status={habit.days.filter(item=>item===i).length>0}> {day}</Day>)}
-                            </DaysContainer>
-                        </HabitCard>)
-                        : 
-                        <div>Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!</div>
-                    )
-                }
-            </Body>
-            <Footer progress={progress}></Footer>
-        </>
-    );
+	return(
+		<>
+			<TopBar/>
+			<Body>
+				<Top>
+					<div>Meus hábitos</div>
+					<ButtonPlus onClick={newHabit}>+</ButtonPlus>
+				</Top>
+				{
+					<NewHabit active={createNewHabit} onSubmit={saveHabit}>
+						<InputNameHabit disabled={loading} onChange={e=>setNameNewHabit(e.target.value)} value={nameNewHabit} placeholder="nome do hábito" type="text" required></InputNameHabit>
+						<WeekDaysContainer>
+							{(!createNewHabit && selectedDays.filter(i=>i===true).length===0)?
+								null
+								:
+								weekDays.map((item, i)=><WeekDay disabled={loading} key={i} id={i} name={item} selectedDays={selectedDays} ></WeekDay>)
+							}
+						</WeekDaysContainer>
+						<Buttons>
+							<CancelButton onClick={newHabit}>Cancelar</CancelButton>
+							{loading?
+								<SaveButton><Loader type="ThreeDots" color="#FFFFFF" height={60} width={60} /></SaveButton>
+								:
+								<SaveButton type="submit">Salvar</SaveButton>
+							}
+						</Buttons>
+					</NewHabit>
+				}
+				{habitsList === undefined?
+					<div>Carregando...</div>
+					:
+					(habitsList.length>0?
+						habitsList.map((habit,i)=>
+							<CardHabit key={i}>
+								<NameContainer>
+									<div>{habit.name}</div>
+									<div onClick={()=>deleteHabit(habit.id)}>
+										<TrashOutline width="18px"></TrashOutline>
+									</div>
+								</NameContainer>
+								<DaysContainer>
+									{weekDays.map((day,i)=> <Day key={i} status={habit.days.filter(item=>item===i).length>0}> {day}</Day>)}
+								</DaysContainer>
+							</CardHabit>)
+						: 
+						<div>Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!</div>
+					)
+				}
+			</Body>
+			<Footer/>
+		</>
+	);
 }
 
 const DaysContainer = styled.div`
@@ -190,16 +239,25 @@ const DaysContainer = styled.div`
 const NameContainer = styled.div`
     display: flex;
     justify-content: space-between;
-    height: 50%;
+    height: 62px;
     align-items: center;
     font-family: 'Lexend Deca', sans-serif;
     font-size: 19.976px;
     line-height: 25px;
     color: #666666;
+	
+	div:first-of-type{
+		overflow: hidden;
+		text-overflow: ellipsis;
+		display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+		word-break: break-all;
+	}
 
     div:last-of-type{
-        margin-bottom: 18px;
         margin-right: -6px;
+		margin-top: -40px;
     }
 `;
 
@@ -219,30 +277,14 @@ const Day = styled.div`
     margin-right: 4px;
 `;
 
-const HabitCard = styled.div`
-    width: 340px;
-    height: 91px;
+const CardHabit = styled.div`
     background: #FFFFFF;
     border-radius: 5px;
     margin-bottom: 10px;
     padding: 14px;
 `;
 
-const Body = styled.div`
-    margin-top: 70px;
-    margin-bottom: 70px;
-    border-bottom: 1px solid #f2f2f2;
-    background-color:#f2f2f2;
-    padding: 0 18px;
-    min-height: 520px;
-    
-    > div {
-        font-family: 'Lexend Deca', sans-serif;
-        font-size: 17.976px;
-        line-height: 22px;
-        color: #666666;
-    }
-`;
+
 
 const WeekDaysContainer = styled.div`
     width: 100%;
@@ -313,44 +355,6 @@ const NewHabit = styled.form`
     margin-bottom: 20px;   
 `;
 
-const Header = styled.div`
-    height: 70px;
-    background: #126BA5;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15);
-    position: fixed;
-    width:375px;
-    top: 0;
-    left: 0;
-    display: flex; 
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 18px;
-`;
-const Title = styled.div`
-    font-family: 'Playball', cursive;
-    font-size: 38.982px;
-    line-height: 49px;
-    color: #FFFFFF;
-`;
-const ImageProfile = styled.img`
-    height: 51px;
-    width: 51px;
-    border-radius:100%;
-`;
-
-const Top = styled.div`
-    height: 85px;
-    display: flex;
-    justify-content:space-between;
-    align-items: center;
-
-    div {
-        font-family: 'Lexend Deca', sans-serif;
-        font-size: 22.976px;
-        line-height: 29px;
-        color: #126BA5;
-    }
-`;
 const ButtonPlus = styled.button`
     width: 40px;
     height: 40px;
