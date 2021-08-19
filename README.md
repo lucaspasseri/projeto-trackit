@@ -71,7 +71,7 @@ Version Control:<br>
 ### Deploy
 
 <p align="center">
-  <img src="/public/trackit-logo.png" width="1000" alt="trackit-view" />
+  <img src="/public/trackit-view.png" width="1000" alt="trackit-view" />
 </p>
 
 The application layout is available on Vercel:
