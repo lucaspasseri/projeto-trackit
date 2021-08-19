@@ -46,7 +46,7 @@ export default function Footer(){
 			setTodayHabits(response.data);  
 		});
 		request.catch(response=>console.log(response));
-	}, []);
+	}, [progress]);
 
 	if(todayHabits !== undefined){
 		setProgress((todayHabits.filter(item=>item.done).length/todayHabits.length)*100);
@@ -97,6 +97,8 @@ const FooterContainer = styled.div`
     justify-content: space-around;
     padding: 0 15px;
 	width: 100vw;
+	-webkit-box-shadow: 0px -3px 7px 1px rgba(0, 0, 0, 0.15), 0px -3px 7px 1px rgba(0, 0, 0, 0.15); 
+	box-shadow: 0px -3px 7px 1px rgba(0, 0, 0, 0.15), 0px -3px 7px 1px rgba(0, 0, 0, 0.15);
 	@media screen and (max-width: 320px) {
 		width: 320px;
 	}

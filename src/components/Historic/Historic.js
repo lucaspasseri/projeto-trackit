@@ -7,7 +7,7 @@ import UserContext from "../../contexts/UserContext";
 
 import Footer from "../Footer/Footer";
 import TopBar from "../TopBar/TopBar";
-import { Top, Body } from "../Styles/Components";
+import { Top, Body, Container } from "../Styles/Components";
 
 export default function Historic(){
 	const history = useHistory();
@@ -90,7 +90,7 @@ export default function Historic(){
 	});
 
 	return(
-		<>
+		<Container>
 			<TopBar user={user}/>
 			<Body>
 				<Top>
@@ -106,9 +106,12 @@ export default function Historic(){
 				</StyleHistoric>
 			</Body>
 			<Footer/>
-		</>
+		</Container>
 	);
 }
+
+
+
 const StyleHistoric = styled.div`
 
 	.day-name {

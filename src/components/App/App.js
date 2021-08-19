@@ -35,6 +35,9 @@ export default function App(){
 }
 const Container = styled.div`
     width: 100vw;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 	@media screen and (max-width: 320px) {
 		width: 320px;
 	}	
