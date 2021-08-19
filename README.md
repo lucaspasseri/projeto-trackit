@@ -1,70 +1,99 @@
-# Getting Started with Create React App
+<p align="center">
+  <img src="/public/trackit-logo.png" width="300" alt="trackit-logo" />
+</p>
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# CineFlex
 
-## Available Scripts
+## About
+<p>
+  Track it is habit tracking application.
+</p>
 
-In the project directory, you can run:
+### Pre-requisites
 
-### `npm start`
+Before you begin, you will need to have the following tools installed on your machine: [Git] (https://git-scm.com), [Node.js] (https://nodejs.org/en/). In addition, it is good to have an editor to work with the code like [VSCode] (https://code.visualstudio.com/)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### Running the web application
+```bash
+# Clone this repository
+$ git clone <https://github.com/lucaspasseri/trackit.git>
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+# Access the project folder cmd/terminal
+$ cd trackit
 
-### `npm test`
+# You will need this API to run the application
+https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+# Create a .env file at the root of the project. And configure the environment variable
+REACT_APP_API_BASE_URL=https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit
 
-### `npm run build`
+# Install the dependencies
+$ yarn install or $ npm install
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+# Run the application in development mode
+$ yarn start or $ npm run start
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+# The server will start at port: 3000 - go to http://localhost:3000
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-### `npm run eject`
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+### 	&#128736; Tech Stack
+Languages:<br>
+<p align="center">
+    <img src="https://img.shields.io/badge/html5%20-%23E34F26.svg?&style=for-the-badge&logo=html5&logoColor=white"/>
+    <img src="https://img.shields.io/badge/css3%20-%231572B6.svg?&style=for-the-badge&logo=css3&logoColor=white"/>
+    <img src="https://img.shields.io/badge/javascript%20-%23323330.svg?&style=for-the-badge&logo=javascript&logoColor=%23F7DF1E"/>
+    <img scr='https://img.shields.io/badge/jsx%20-%2320232a.svg?&style=for-the-badge&logo=jsx&logoColor=%2361DAFB'>
+</p>
+<br>
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+The following tools and frameworks were used in the construction of the project:<br>
+<p align="center" style='display: flex; justify-content: center; flex-wrap:wrap; align-items: center; margin: 0 50px;'>
+  <img style='margin: 5px;' src='https://img.shields.io/badge/styled-components%20-%2320232a.svg?&style=for-the-badge&color=b8679e&logo=styled-components&logoColor=%3a3a3a'>
+  <img style='margin: 5px;' src='https://img.shields.io/badge/prop_types%20-%2320232a.svg?&style=for-the-badge&color=blueviolet'/>
+  <img style='margin: 5px;' src="https://img.shields.io/badge/node.js%20-%2343853D.svg?&style=for-the-badge&logo=node.js&logoColor=white"/>
+  <img style='margin: 5px;' src='https://img.shields.io/badge/axios%20-%2320232a.svg?&style=for-the-badge&color=informational'>
+  <img style='margin: 5px;' src='https://img.shields.io/badge/babel%20-%2320232a.svg?&style=for-the-badge&color=323230&logo=babel&logoColor=%f4dc4e'>
+  <img style='margin: 5px;' src="https://img.shields.io/badge/react-app%20-%2320232a.svg?&style=for-the-badge&color=60ddf9&logo=react&logoColor=%2361DAFB"/>
+  <img style='margin: 5px;' src="https://img.shields.io/badge/react_route%20-%2320232a.svg?&style=for-the-badge&logo=react&logoColor=%2361DAFB"/>
+</p>
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+<br><br>
+Version Control:<br>
+<p align="center">
+    <img src="https://img.shields.io/badge/git%20-%23F05033.svg?&style=for-the-badge&logo=git&logoColor=white"/>
+    <img src="https://img.shields.io/badge/github%20-%23121011.svg?&style=for-the-badge&logo=github&logoColor=white"/>
+</p>
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
 
-## Learn More
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Deploy
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+<p align="center">
+  <img src="/public/trackit-log.png" width="1000" alt="trackit-view" />
+</p>
 
-### Code Splitting
+The application layout is available on Vercel:
+<p align="center">
+	<a style='margin-left: 10px;' href='https://projeto-trackit.vercel.app/'><img src='https://img.shields.io/badge/vercel%20-%23000000.svg?&style=for-the-badge&logo=vercel&logoColor=white'></a>
+</p>
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
 
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+### Author
+---
+<p align='center'>
+  Made by Lucas Passeri 👋🏽 Get in Touch! <br><br>
+	<table align="center">
+  		<tr>
+    		<td align="center">
+				<p align='center'>
+	  				<img src="https://avatars.githubusercontent.com/u/16906161?v=4" width="100px;"/> <br />
+ 					<sub><b>Lucas Passeri</b></sub><br />
+	  				<a href="https://www.linkedin.com/in/lucas-passeri-7b05377b/"><img src="https://img.shields.io/badge/linkedin-%230077B5.svg?&style=for-the-badge&logo=linkedin&logoColor=white"/></a>
+	  				<a href="mailto:lucaspasseri@poli.ufrj.br"><img src="https://img.shields.io/badge/gmail-D14836?&style=for-the-badge&logo=gmail&logoColor=white"/></a>
+  				</p><br />
+			</td>
+  		</tr>
+	</table>
+</p>
