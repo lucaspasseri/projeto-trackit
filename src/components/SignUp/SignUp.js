@@ -3,6 +3,7 @@ import React, {useState} from "react";
 import axios from "axios";
 import Loader from "react-loader-spinner";
 import { Link, useHistory } from "react-router-dom";
+import logo from "../../assets/trackit-image.jpg";
 
 export default function SignUp(){
 	let history = useHistory();
@@ -49,7 +50,7 @@ export default function SignUp(){
 		<>
 			<Header>
 				<Logo>
-					<ImageLogo src="https://thumbs.dreamstime.com/b/growing-graph-d-histogram-green-arrow-32612397.jpg"/>
+					<ImageLogo src={logo} alt="tracktit logo"/>
 					<TextLogo>TrackIt</TextLogo>
 				</Logo>
 			</Header>
