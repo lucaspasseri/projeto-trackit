@@ -34,5 +34,8 @@ export default function App(){
 	);
 }
 const Container = styled.div`
-    width: 375px;
+    width: 100vw;
+	@media screen and (max-width: 320px) {
+		width: 320px;
+	}	
 `;

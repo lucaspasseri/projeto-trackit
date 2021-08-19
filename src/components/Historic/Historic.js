@@ -7,6 +7,7 @@ import UserContext from "../../contexts/UserContext";
 
 import Footer from "../Footer/Footer";
 import TopBar from "../TopBar/TopBar";
+import { Top, Body } from "../Styles/Components";
 
 export default function Historic(){
 	const history = useHistory();
@@ -16,7 +17,15 @@ export default function Historic(){
 
 	const userStorage = JSON.parse(localStorage.getItem("userStorage"));
 	
-	const weekDays = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];  
+	const weekDays = [
+		"Domingo",
+		"Segunda-feira",
+		"Terça-feira",
+		"Quarta-feira", 
+		"Quinta-feira", 
+		"Sexta-feira", 
+		"Sábado"
+	];  
 
 	let config;
 
@@ -28,7 +37,7 @@ export default function Historic(){
 			setUser(localStorage);
 			config = {
 				headers: {
-					"Authorization": `Bearer ${localStorage.token}`
+					"Authorization": `Bearer ${userStorage.token}`
 				}
 			};
 		}
@@ -47,20 +56,16 @@ export default function Historic(){
 		const request = axios.get(`${process.env.REACT_APP_API_BASE_URL}/habits/history/daily`, config);
 
 		request.then(response => {
-			console.log(response.data);
 			setHistoric(response.data);
 		});
 		request.catch(response=>console.log(response));
 	}, []);
 
-	//const days = historic?.map(item =>item.day);
-	//const habits = historic?.map(item => item.habits);
-
 	const historico = historic?.map((item, i) => {
 		return (
 			<div key={i}>
-				<div>{item.day+" - "+weekDays[item.habits[0].weekDay]}</div>
-				<div className="day">
+				<div className="day-name">{weekDays[item.habits[0].weekDay]+", "+item.day}</div>
+				<div className="day-items">
 					{
 						item.habits.map((habit, n) => {
 							return (
@@ -68,7 +73,7 @@ export default function Historic(){
 									<div className="habit-name">
 										{habit.name}
 									</div>
-									<div>
+									<div className="habit-status">
 										{habit.done?
 											<span role="img" aria-label="correct">✅</span>
 											:
@@ -84,8 +89,6 @@ export default function Historic(){
 		);
 	});
 
-	console.log(historico);
-
 	return(
 		<>
 			<TopBar user={user}/>
@@ -95,7 +98,10 @@ export default function Historic(){
 				</Top>
 				<StyleHistoric>
 					{
-						historico
+						historico===undefined?
+							"Carregando..."
+							:
+							historico
 					}
 				</StyleHistoric>
 			</Body>
@@ -104,44 +110,33 @@ export default function Historic(){
 	);
 }
 const StyleHistoric = styled.div`
+
+	.day-name {
+		color: #126BA5;
+	}
 	
-	.day {
+	.day-items {
 		margin: 10px 0 20px 0;
 	}
 
 	.habit {
 		display: flex;
 		justify-content: space-between;
-		margin-bottom: 3px;
+		margin-bottom: 5px;
+		background: #FFF;
+		padding: 5px 8px 5px 10px;
 	}
-`;
-
-const Top = styled.div`
-    height: 85px;
-    display: flex;
-    justify-content:space-between;
-    align-items: center;
-
-    div {
-        font-family: 'Lexend Deca', sans-serif;
-        font-size: 22.976px;
-        line-height: 29px;
-        color: #126BA5;
-    }
-`;
-
-const Body = styled.div`
-    margin-top: 70px;
-    margin-bottom: 70px;
-    border-bottom: 1px solid #f2f2f2;
-    background-color:#f2f2f2;
-    padding: 0 18px;
-    min-height: 520px;
-    
-    > div {
-        font-family: 'Lexend Deca', sans-serif;
-        font-size: 17.976px;
-        line-height: 22px;
-        color: #666666;
-    }
+	.habit-name {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+		word-break: break-all;
+	}
+	.habit-status {
+		width: 30px;
+		display: flex;
+		justify-content: flex-end;
+	}
 `;

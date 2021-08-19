@@ -83,7 +83,6 @@ const StyledLink = styled(Link)`
 `;
 
 const FooterContainer = styled.div`
-    width: 375px;
     height: 70px;
     background: #ffffff;
     display: flex;
@@ -97,4 +96,8 @@ const FooterContainer = styled.div`
     left: 0;
     justify-content: space-around;
     padding: 0 15px;
+	width: 100vw;
+	@media screen and (max-width: 320px) {
+		width: 320px;
+	}
 `;

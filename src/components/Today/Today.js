@@ -9,13 +9,16 @@ import { useHistory } from "react-router-dom";
 
 import Footer from "../Footer/Footer";
 import TopBar from "../TopBar/TopBar";
+import { Body } from "../Styles/Components";
 
 export default function Today(){
 	const history = useHistory();
 
 	const { user, setUser, setProgress } = useContext(UserContext);
     
-	const todayDate = dayjs().locale("pt-br").format("dddd");
+	const weekDay = dayjs().locale("pt-br").format("dddd");
+	const dayAndMonth = dayjs().locale("pt-br").format("D MMM");
+
 	const [todayHabits, setTodayHabits] = useState();
 
 	const userStorage = JSON.parse(localStorage.getItem("userStorage"));
@@ -109,8 +112,8 @@ export default function Today(){
 		<>
 			<TopBar user={user}/>
 			<Body>
-				<Top>
-					<div>{todayDate}</div>
+				<TopToday>
+					<div>{`${weekDay}, ${dayAndMonth}`}</div>
 					<Subtitle status={undefinedHabits()}>
 						{todayHabits === undefined?
 							"Carregando..."
@@ -122,14 +125,14 @@ export default function Today(){
 							)
 						}
 					</Subtitle>
-				</Top>
+				</TopToday>
 				<HabitsList>
 					{todayHabits === undefined?
-						"Carregando..."
+						<div>Carregando...</div>
 						:
 						(todayHabits.length>0?
 							todayHabits.map(item=>
-								<HabitCard key={item.id}>
+								<CardToday key={item.id}>
 									<LeftSide>
 										<HabitName>{item.name}</HabitName>
 										<div><CurrentSequence status={item.currentSequence}>Sequência atual: <span>{item.currentSequence} dias</span></CurrentSequence></div>
@@ -138,7 +141,7 @@ export default function Today(){
 									<RightSide onClick={()=>habitDone(item)} done={item.done}>
 										<CheckmarkOutline color='#ffffff' height="80px"  width="80px"/>
 									</RightSide>
-								</HabitCard>
+								</CardToday>
 							)
 							:
 							<div></div>
@@ -155,6 +158,12 @@ const HabitName = styled.div`
     font-size: 19.976px;
     line-height: 25px;
     margin-bottom: 7px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: -webkit-box;
+	-webkit-line-clamp: 1;
+	-webkit-box-orient: vertical;
+	word-break: break-all;
 `;
 
 const Subtitle = styled.div`
@@ -204,37 +213,12 @@ const RightSide = styled.div`
     box-sizing: border-box;
     border-radius: 5px;
 `;
-const HabitCard = styled.div`
-    height: 94px;
-    background-color:#FFF;
-    margin-bottom: 10px;
-    border-radius: 5px;
-    padding: 13px;
-    display: flex;
-    justify-content: space-between;
-`;
 
 const HabitsList = styled.div`
     padding-top: 28px;
 `;
 
-const Body = styled.div`
-    margin-top: 70px;
-    margin-bottom: 70px;
-    border-bottom: 1px solid #f2f2f2;
-    background-color:#f2f2f2;
-    padding: 0 18px;
-    min-height: 520px;
-    
-    > div {
-        font-family: 'Lexend Deca', sans-serif;
-        font-size: 17.976px;
-        line-height: 22px;
-        color: #666666;
-    }
-`;
-
-const Top = styled.div`
+const TopToday = styled.div`
     height: 85px;
     display: flex;
     flex-direction: column;
@@ -247,3 +231,12 @@ const Top = styled.div`
         color: #126BA5;
     }
 `;
+export const CardToday = styled.div`
+    height: 94px;
+    background-color:#FFF;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    padding: 13px;
+    display: flex;
+    justify-content: space-between;
+`; 

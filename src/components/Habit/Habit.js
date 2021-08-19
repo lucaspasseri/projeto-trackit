@@ -8,6 +8,7 @@ import { useHistory } from "react-router-dom";
 import TopBar from "../TopBar/TopBar";
 import WeekDay from "../WeekDay/WeekDay";
 import Footer from "../Footer/Footer";
+import { Top, Body } from "../Styles/Components";
 
 import UserContext from "../../contexts/UserContext";
 
@@ -209,7 +210,7 @@ export default function Habit(){
 					:
 					(habitsList.length>0?
 						habitsList.map((habit,i)=>
-							<HabitCard key={i}>
+							<CardHabit key={i}>
 								<NameContainer>
 									<div>{habit.name}</div>
 									<div onClick={()=>deleteHabit(habit.id)}>
@@ -219,7 +220,7 @@ export default function Habit(){
 								<DaysContainer>
 									{weekDays.map((day,i)=> <Day key={i} status={habit.days.filter(item=>item===i).length>0}> {day}</Day>)}
 								</DaysContainer>
-							</HabitCard>)
+							</CardHabit>)
 						: 
 						<div>Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!</div>
 					)
@@ -238,16 +239,25 @@ const DaysContainer = styled.div`
 const NameContainer = styled.div`
     display: flex;
     justify-content: space-between;
-    height: 50%;
+    height: 62px;
     align-items: center;
     font-family: 'Lexend Deca', sans-serif;
     font-size: 19.976px;
     line-height: 25px;
     color: #666666;
+	
+	div:first-of-type{
+		overflow: hidden;
+		text-overflow: ellipsis;
+		display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+		word-break: break-all;
+	}
 
     div:last-of-type{
-        margin-bottom: 18px;
         margin-right: -6px;
+		margin-top: -40px;
     }
 `;
 
@@ -267,30 +277,14 @@ const Day = styled.div`
     margin-right: 4px;
 `;
 
-const HabitCard = styled.div`
-    width: 340px;
-    height: 91px;
+const CardHabit = styled.div`
     background: #FFFFFF;
     border-radius: 5px;
     margin-bottom: 10px;
     padding: 14px;
 `;
 
-const Body = styled.div`
-    margin-top: 70px;
-    margin-bottom: 70px;
-    border-bottom: 1px solid #f2f2f2;
-    background-color:#f2f2f2;
-    padding: 0 18px;
-    min-height: 520px;
-    
-    > div {
-        font-family: 'Lexend Deca', sans-serif;
-        font-size: 17.976px;
-        line-height: 22px;
-        color: #666666;
-    }
-`;
+
 
 const WeekDaysContainer = styled.div`
     width: 100%;
@@ -361,21 +355,6 @@ const NewHabit = styled.form`
     margin-bottom: 20px;   
 `;
 
-
-
-const Top = styled.div`
-    height: 85px;
-    display: flex;
-    justify-content:space-between;
-    align-items: center;
-
-    div {
-        font-family: 'Lexend Deca', sans-serif;
-        font-size: 22.976px;
-        line-height: 29px;
-        color: #126BA5;
-    }
-`;
 const ButtonPlus = styled.button`
     width: 40px;
     height: 40px;
