@@ -9,7 +9,7 @@ import { useHistory } from "react-router-dom";
 
 import Footer from "../Footer/Footer";
 import TopBar from "../TopBar/TopBar";
-import { Body } from "../Styles/Components";
+import { Body, Container } from "../Styles/Components";
 
 export default function Today(){
 	const history = useHistory();
@@ -73,7 +73,9 @@ export default function Today(){
 				// eslint-disable-next-line no-undef
 					axios.get(`${process.env.REACT_APP_API_BASE_URL}/habits/today`, config);
 				requestGet.then(response=>{
-					setTodayHabits(response.data);
+					const aux = response.data;
+					setTodayHabits(aux);
+					setProgress((aux.filter(item=>item.done).length/aux.length)*100);
 				});
 				requestGet.catch(response=>console.log(response));
 			});
@@ -92,7 +94,9 @@ export default function Today(){
 					axios.get(`${process.env.REACT_APP_API_BASE_URL}/habits/today`, config);
 
 				requestGet.then(response=>{
-					setTodayHabits(response.data);
+					const aux = response.data;
+					setTodayHabits(aux);
+					setProgress((aux.filter(item=>item.done).length/aux.length)*100);
 				});
 				requestGet.catch(response=>console.log(response));
 			});
@@ -109,7 +113,7 @@ export default function Today(){
 	}
 
 	return(  
-		<>
+		<Container>
 			<TopBar user={user}/>
 			<Body>
 				<TopToday>
@@ -150,7 +154,7 @@ export default function Today(){
 				</HabitsList>
 			</Body>
 			<Footer/>
-		</>
+		</Container>
 	);
 }
 

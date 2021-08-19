@@ -59,7 +59,7 @@ export default function Home(){
 	}
 
 	return(
-		<>
+		<Container>
 			<Header>
 				<Logo>
 					<ImageLogo src={logo}/>
@@ -76,9 +76,15 @@ export default function Home(){
 				}
 				<NavLink to="/cadastro">Não tem uma conta? Cadastre-se!</NavLink>
 			</UserActs>
-		</>
+		</Container>
 	);
 }
+
+const Container = styled.div`
+	@media screen and (min-width: 600px) {
+		width: 560px;
+	}
+`;
 
 const Header = styled.div`
     height: 280px;

@@ -8,7 +8,7 @@ import { useHistory } from "react-router-dom";
 import TopBar from "../TopBar/TopBar";
 import WeekDay from "../WeekDay/WeekDay";
 import Footer from "../Footer/Footer";
-import { Top, Body } from "../Styles/Components";
+import { Top, Body, Container } from "../Styles/Components";
 
 import UserContext from "../../contexts/UserContext";
 
@@ -178,7 +178,7 @@ export default function Habit(){
 	}
     
 	return(
-		<>
+		<Container>
 			<TopBar/>
 			<Body>
 				<Top>
@@ -227,7 +227,7 @@ export default function Habit(){
 				}
 			</Body>
 			<Footer/>
-		</>
+		</Container>
 	);
 }
 
@@ -302,7 +302,8 @@ const WeekDaysContainer = styled.div`
 const Buttons = styled.div`
     display: flex;
     width: 100%;
-    justify-content: flex-end;
+    justify-content: space-between;
+	align-items: center;
     margin-top:20px;
 `;
 
@@ -322,8 +323,10 @@ const CancelButton = styled.div`
     height: 35px;
     background: #FFFFFF;
     border-radius: 4.63636px;
-    border: none;
     color: #52B6FF;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 `;
 
 const InputNameHabit = styled.input`
@@ -335,10 +338,10 @@ const InputNameHabit = styled.input`
     font-family: 'Lexend Deca', sans-serif;
     font-size: 19.976px;
     line-height: 25px;
+	padding-left: 11px;
 
-    ::placeholder {
+	::placeholder {
         color: #DBDBDB;
-        padding-left: 11px;
     }
    
 `; 

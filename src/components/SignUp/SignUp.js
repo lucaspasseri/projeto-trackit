@@ -33,7 +33,7 @@ export default function SignUp(){
 				setName("");
 				setImage("");
 				setLoading(false);
-				history.push("/home");
+				history.push("/");
 			});
 			request.catch(() => {
 				setEmail("");
@@ -47,7 +47,7 @@ export default function SignUp(){
 	}
    
 	return(
-		<>
+		<Container>
 			<Header>
 				<Logo>
 					<ImageLogo src={logo} alt="tracktit logo"/>
@@ -65,11 +65,17 @@ export default function SignUp(){
 						:
 						<ButtonLogIn type="submit">Cadastrar</ButtonLogIn> 
 				}
-				<NavLink to="/home">Já tem uma conta? Faça login!</NavLink>
+				<NavLink to="/">Já tem uma conta? Faça login!</NavLink>
 			</UserActs>
-		</>    
+		</Container>    
 	);
 }
+
+const Container = styled.div`
+	@media screen and (min-width: 600px) {
+		width: 560px;
+	}
+`;
 
 const Header = styled.div`
     height: 280px;

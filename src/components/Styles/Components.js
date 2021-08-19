@@ -1,5 +1,12 @@
 import styled from "styled-components";
 
+export const Container = styled.div`
+	display: flex;
+	@media screen and (min-width: 600px) {
+		width: 560px;
+	}
+`;
+
 export const Top = styled.div`
     height: 85px;
     display: flex;
@@ -21,6 +28,7 @@ export const Body = styled.div`
     background-color:#f2f2f2;
     padding: 0 18px;
     min-height: 520px;
+	width: 100vw;	
     
     > div {
         font-family: 'Lexend Deca', sans-serif;
