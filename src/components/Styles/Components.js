@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 
 export const Container = styled.div`
 	display: flex;
@@ -74,4 +75,85 @@ export const Card = styled.div`
     padding: 13px;
     display: flex;
     justify-content: space-between;
+`;
+
+export const UserActs = styled.form`
+    display: flex;
+    flex-direction:column;
+    padding: 0 36px;
+
+    > * {
+        height: 45px;
+        border-radius: 5px;
+        border: 1px solid #D5D5D5;
+        margin-bottom: 6px;
+        font-family: 'Lexend Deca', sans-serif;
+        font-size: 19.976px;
+        line-height: 25px;
+    }
+
+    div {
+        font-size: 13.976px;
+        line-height: 17px;
+        text-decoration-line: underline;
+        color: #52B6FF;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border: none;
+    }
+`;
+export const InputLogIn = styled.input`
+    padding-left: 10px;
+    ::placeholder{
+        color: #D5D5D5;
+    }
+`;
+export const ButtonLogIn = styled.button`
+    background-color:#52B6FF;
+    color: #FFFFFF;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+`;
+export const NavLink = styled(Link)`
+    font-size: 13.976px;
+    line-height: 17px;
+    text-decoration-line: underline;
+    color: #52B6FF;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+`;
+
+export const ContainerAuth = styled.div`
+	@media screen and (min-width: 600px) {
+		width: 560px;
+	}
+`;
+
+export const HeaderAuth = styled.div`
+    height: 280px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+`;
+export const Logo = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 180px;
+`;
+export const ImageLogo = styled.img`
+    width: 160px;
+`;
+export const TextLogo = styled.div`
+    font-family: 'Playball';
+    font-size: 68.982px;
+    line-height: 86px;
+    color: #126ba5;
+    width: 100%;
+    display: flex;
+    justify-content: center;
 `;
