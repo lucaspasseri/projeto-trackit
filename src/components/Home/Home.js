@@ -4,6 +4,7 @@ import axios from "axios";
 import { Link, useHistory } from "react-router-dom";
 import Loader from "react-loader-spinner";
 import UserContext from "../../contexts/UserContext";
+import logo from "../../assets/trackit-image.jpg";
 
 export default function Home(){
 	const {setUser} = useContext(UserContext);
@@ -61,7 +62,7 @@ export default function Home(){
 		<>
 			<Header>
 				<Logo>
-					<ImageLogo src="https://thumbs.dreamstime.com/b/growing-graph-d-histogram-green-arrow-32612397.jpg"/>
+					<ImageLogo src={logo}/>
 					<TextLogo>TrackIt</TextLogo>
 				</Logo>
 			</Header>
