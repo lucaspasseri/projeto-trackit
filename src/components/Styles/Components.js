@@ -47,12 +47,19 @@ export const Header = styled.div`
     top: 0;
     left: 0;
     display: flex; 
-    justify-content: space-between;
+    justify-content:space-between;
     align-items: center;
-    padding: 0 18px;
+    padding: 0 15px 0 20px;
 	width: 100vw;
 	@media screen and (max-width: 320px) {
 		width: 320px;
+	}
+
+	.user-xp {
+		display: flex;
+		width: 120px;
+		justify-content: space-between;
+		align-items: center;
 	}
 `;
 export const Title = styled.div`
