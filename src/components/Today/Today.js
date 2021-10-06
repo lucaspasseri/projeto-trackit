@@ -7,6 +7,7 @@ import "dayjs/locale/pt-br";
 import UserContext from "../../contexts/UserContext";
 import { useHistory } from "react-router-dom";
 
+import CalculateProgress from "../Utils/CalculateProgress";
 import Footer from "../Footer/Footer";
 import TopBar from "../TopBar/TopBar";
 import { Body, Container } from "../Styles/Components";
@@ -24,28 +25,21 @@ export default function Today(){
 	const userStorage = JSON.parse(localStorage.getItem("userStorage"));
 
 	let config;
-
-	if(!user) {
-		if(!userStorage){
-			history.push("/");
-			return null;
-		}else{
-			setUser(userStorage);
-			config = {
-				headers: {
-					"Authorization": `Bearer ${userStorage.token}`
-				}
-			};
-		}
-		
-	} else {
+	if(user){
 		config = {
 			headers: {
 				"Authorization": `Bearer ${user.token}`
 			}
 		};
+	} else {
+		setUser(userStorage);
+		config = {
+			headers: {
+				"Authorization": `Bearer ${userStorage.token}`
+			}
+		};
 	}
-    
+
 	useEffect(() => {
 
 		// eslint-disable-next-line no-undef
@@ -54,12 +48,10 @@ export default function Today(){
 		request.then(response => {
 			setTodayHabits(response.data);  
 		});
-		request.catch(response=>console.log(response));
+		request.catch(() => {
+			history.push("/");
+		});
 	}, []);
-
-	if(todayHabits !== undefined){
-		setProgress((todayHabits.filter(item=>item.done).length/todayHabits.length)*100);
-	}
     
 	function habitDone(item){
 		if(!item.done){
@@ -75,32 +67,25 @@ export default function Today(){
 				requestGet.then(response=>{
 					const aux = response.data;
 					setTodayHabits(aux);
-					setProgress((aux.filter(item=>item.done).length/aux.length)*100);
+					setProgress(CalculateProgress(response.data));
 				});
-				requestGet.catch(response=>console.log(response));
 			});
-			request.catch(response=>console.log(response));
-		}else {
+		} else {
 
-			
 			const request = 
 				// eslint-disable-next-line no-undef
 				axios.post(`${process.env.REACT_APP_API_BASE_URL}/habits/${item.id}/uncheck`,{}, config);
 			request.then(()=>{
 
-				
 				const requestGet = 
 					// eslint-disable-next-line no-undef
 					axios.get(`${process.env.REACT_APP_API_BASE_URL}/habits/today`, config);
 
 				requestGet.then(response=>{
-					const aux = response.data;
-					setTodayHabits(aux);
-					setProgress((aux.filter(item=>item.done).length/aux.length)*100);
+					setTodayHabits(response.data);
+					setProgress(CalculateProgress(response.data));
 				});
-				requestGet.catch(response=>console.log(response));
 			});
-			request.catch(response=>console.log(response));
 		}
 	}
 	function undefinedHabits(){
@@ -114,7 +99,7 @@ export default function Today(){
 
 	return(  
 		<Container>
-			<TopBar user={user}/>
+			<TopBar />
 			<Body>
 				<TopToday>
 					<div>{`${weekDay}, ${dayAndMonth}`}</div>
@@ -123,9 +108,13 @@ export default function Today(){
 							"Carregando..."
 							:
 							((todayHabits.filter(item=>item.done).length/todayHabits.length)*100>0?
-								`${((todayHabits.filter(item=>item.done).length/todayHabits.length)).toFixed(2)*100}% dos hábitos concluidos`
+								`${((todayHabits.filter(item=>item.done).length/todayHabits.length)).toFixed(2)*100}
+								% dos hábitos para hoje concluidos`
 								:
-								"Nenhum hábito concluido ainda"
+								todayHabits.filter(item=>item.done).length/todayHabits.length === 0?
+									"0% dos hábitos para hoje concluidos"
+									:
+									"Nenhum hábito cadastrado para hoje"
 							)
 						}
 					</Subtitle>

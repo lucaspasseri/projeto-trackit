@@ -8,6 +8,7 @@ import { useHistory } from "react-router-dom";
 import TopBar from "../TopBar/TopBar";
 import WeekDay from "../WeekDay/WeekDay";
 import Footer from "../Footer/Footer";
+import CalculateProgress from "../Utils/CalculateProgress";
 import { Top, Body, Container } from "../Styles/Components";
 
 import UserContext from "../../contexts/UserContext";
@@ -22,27 +23,21 @@ export default function Habit(){
 
 	let config;
 
-	if(!user) {
-		if(!userStorage){
-			history.push("/");
-			return null;
-		}else{
-			setUser(userStorage);
-			config = {
-				headers: {
-					"Authorization": `Bearer ${userStorage.token}`
-				}
-			};
-		}
-		
-	} else {
+	if(user){
 		config = {
 			headers: {
 				"Authorization": `Bearer ${user.token}`
 			}
 		};
+	} else {
+		setUser(userStorage);
+		config = {
+			headers: {
+				"Authorization": `Bearer ${userStorage.token}`
+			}
+		};
 	}
-    
+
 	useEffect(() => {
 
 		// eslint-disable-next-line no-undef
@@ -51,8 +46,9 @@ export default function Habit(){
 		request.then(response => {
 			setHabitsList(response.data);
 		});
-		request.catch(response=>console.log(response));
-
+		request.catch(() => {
+			history.push("/");
+		});
 	}, []);
     
 	const [loading, setLoading] = useState(false);
@@ -104,8 +100,7 @@ export default function Habit(){
 					setHabitsList(response.data);
 					setLoading(false);
 				});
-				request.catch(response=>{
-					console.log(response);
+				request.catch(()=>{
 					setLoading(false);
 				});
 
@@ -114,12 +109,10 @@ export default function Habit(){
 					axios.get(`${process.env.REACT_APP_API_BASE_URL}/habits/today`, config);
 
 				req.then(response=>{
-					const aux = response.data;
-					setProgress((aux.filter(item=>item.done).length/aux.length)*100); 
+					setProgress(CalculateProgress(response.data));
 					setLoading(false);
 				});
-				req.catch(response=>{
-					console.log(response);
+				req.catch(()=>{
 					setLoading(false);
 				});
 			});
@@ -151,8 +144,7 @@ export default function Habit(){
 					setHabitsList(response.data);
 					setLoading(false);
 				});
-				request.catch(response=>{
-					console.log(response);
+				request.catch(()=>{
 					setLoading(false);
 				});
 
@@ -160,18 +152,15 @@ export default function Habit(){
 					// eslint-disable-next-line no-undef
 					axios.get(`${process.env.REACT_APP_API_BASE_URL}/habits/today`, config);
 				req.then(response=>{
-					const aux = response.data;
-					setProgress((aux.filter(item=>item.done).length/aux.length)*100); 
+					setProgress(CalculateProgress(response.data));
 					setLoading(false);
 				});
-				req.catch(response=>{
-					console.log(response);
+				req.catch(()=>{
 					setLoading(false);
 				});
 
 			});
-			request.catch(response=>{
-				console.log(response);
+			request.catch(()=>{
 				setLoading(false);
 			});
 		}
@@ -179,7 +168,7 @@ export default function Habit(){
     
 	return(
 		<Container>
-			<TopBar/>
+			<TopBar />
 			<Body>
 				<Top>
 					<div>Meus hábitos</div>
