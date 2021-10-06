@@ -58,7 +58,6 @@ export default function Historic(){
 		request.then(response => {
 			setHistoric(response.data);
 		});
-		request.catch(response=>console.log(response));
 	}, []);
 
 	const historico = historic?.map((item, i) => {

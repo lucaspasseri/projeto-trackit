@@ -7,6 +7,7 @@ import "dayjs/locale/pt-br";
 import UserContext from "../../contexts/UserContext";
 import { useHistory } from "react-router-dom";
 
+import CalculateProgress from "../Utils/CalculateProgress";
 import Footer from "../Footer/Footer";
 import TopBar from "../TopBar/TopBar";
 import { Body, Container } from "../Styles/Components";
@@ -54,12 +55,7 @@ export default function Today(){
 		request.then(response => {
 			setTodayHabits(response.data);  
 		});
-		request.catch(response=>console.log(response));
 	}, []);
-
-	if(todayHabits !== undefined){
-		setProgress((todayHabits.filter(item=>item.done).length/todayHabits.length)*100);
-	}
     
 	function habitDone(item){
 		if(!item.done){
@@ -75,11 +71,9 @@ export default function Today(){
 				requestGet.then(response=>{
 					const aux = response.data;
 					setTodayHabits(aux);
-					setProgress((aux.filter(item=>item.done).length/aux.length)*100);
+					setProgress(CalculateProgress(response.data));
 				});
-				requestGet.catch(response=>console.log(response));
 			});
-			request.catch(response=>console.log(response));
 		}else {
 
 			
@@ -96,11 +90,9 @@ export default function Today(){
 				requestGet.then(response=>{
 					const aux = response.data;
 					setTodayHabits(aux);
-					setProgress((aux.filter(item=>item.done).length/aux.length)*100);
+					setProgress(CalculateProgress(response.data));
 				});
-				requestGet.catch(response=>console.log(response));
 			});
-			request.catch(response=>console.log(response));
 		}
 	}
 	function undefinedHabits(){

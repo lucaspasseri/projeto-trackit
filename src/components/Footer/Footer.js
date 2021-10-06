@@ -3,6 +3,7 @@ import {Link} from "react-router-dom";
 import React, {useContext, useState, useEffect} from "react";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import axios from "axios";
+import CalculateProgress from "../Utils/CalculateProgress";
 
 import "react-circular-progressbar/dist/styles.css";
 import UserContext from "../../contexts/UserContext";
@@ -20,7 +21,7 @@ export default function Footer(){
 	if(!user) {
 		if(!userStorage){
 			history.push("/");
-			return null;
+			return;
 		} else {
 			setUser(userStorage);
 			config = {
@@ -45,11 +46,10 @@ export default function Footer(){
 		request.then(response => {
 			setTodayHabits(response.data);  
 		});
-		request.catch(response=>console.log(response));
 	}, [progress]);
 
 	if(todayHabits !== undefined){
-		setProgress((todayHabits.filter(item=>item.done).length/todayHabits.length)*100);
+		setProgress(CalculateProgress(todayHabits));
 	}
 
 	return(

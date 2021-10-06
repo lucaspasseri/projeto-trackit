@@ -49,11 +49,10 @@ export default function Home(){
 				}));
 				history.push("/hoje");
 			});
-			request.catch(response => {
+			request.catch(() => {
 				setLoading(false);
 				setEmail("");
 				setPassword("");
-				console.log(response);
 				alert("E-mail ou senha incorretos.");
 			});   
 		}

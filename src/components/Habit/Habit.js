@@ -8,6 +8,7 @@ import { useHistory } from "react-router-dom";
 import TopBar from "../TopBar/TopBar";
 import WeekDay from "../WeekDay/WeekDay";
 import Footer from "../Footer/Footer";
+import CalculateProgress from "../Utils/CalculateProgress";
 import { Top, Body, Container } from "../Styles/Components";
 
 import UserContext from "../../contexts/UserContext";
@@ -51,7 +52,6 @@ export default function Habit(){
 		request.then(response => {
 			setHabitsList(response.data);
 		});
-		request.catch(response=>console.log(response));
 
 	}, []);
     
@@ -104,8 +104,7 @@ export default function Habit(){
 					setHabitsList(response.data);
 					setLoading(false);
 				});
-				request.catch(response=>{
-					console.log(response);
+				request.catch(()=>{
 					setLoading(false);
 				});
 
@@ -114,12 +113,10 @@ export default function Habit(){
 					axios.get(`${process.env.REACT_APP_API_BASE_URL}/habits/today`, config);
 
 				req.then(response=>{
-					const aux = response.data;
-					setProgress((aux.filter(item=>item.done).length/aux.length)*100); 
+					setProgress(CalculateProgress(response.data));
 					setLoading(false);
 				});
-				req.catch(response=>{
-					console.log(response);
+				req.catch(()=>{
 					setLoading(false);
 				});
 			});
@@ -151,8 +148,7 @@ export default function Habit(){
 					setHabitsList(response.data);
 					setLoading(false);
 				});
-				request.catch(response=>{
-					console.log(response);
+				request.catch(()=>{
 					setLoading(false);
 				});
 
@@ -160,18 +156,15 @@ export default function Habit(){
 					// eslint-disable-next-line no-undef
 					axios.get(`${process.env.REACT_APP_API_BASE_URL}/habits/today`, config);
 				req.then(response=>{
-					const aux = response.data;
-					setProgress((aux.filter(item=>item.done).length/aux.length)*100); 
+					setProgress(CalculateProgress(response.data));
 					setLoading(false);
 				});
-				req.catch(response=>{
-					console.log(response);
+				req.catch(()=>{
 					setLoading(false);
 				});
 
 			});
-			request.catch(response=>{
-				console.log(response);
+			request.catch(()=>{
 				setLoading(false);
 			});
 		}
