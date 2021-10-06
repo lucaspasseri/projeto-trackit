@@ -29,7 +29,7 @@ export default function Today(){
 	if(!user) {
 		if(!userStorage){
 			history.push("/");
-			return null;
+			return;
 		}else{
 			setUser(userStorage);
 			config = {
@@ -74,22 +74,19 @@ export default function Today(){
 					setProgress(CalculateProgress(response.data));
 				});
 			});
-		}else {
+		} else {
 
-			
 			const request = 
 				// eslint-disable-next-line no-undef
 				axios.post(`${process.env.REACT_APP_API_BASE_URL}/habits/${item.id}/uncheck`,{}, config);
 			request.then(()=>{
 
-				
 				const requestGet = 
 					// eslint-disable-next-line no-undef
 					axios.get(`${process.env.REACT_APP_API_BASE_URL}/habits/today`, config);
 
 				requestGet.then(response=>{
-					const aux = response.data;
-					setTodayHabits(aux);
+					setTodayHabits(response.data);
 					setProgress(CalculateProgress(response.data));
 				});
 			});
@@ -106,7 +103,7 @@ export default function Today(){
 
 	return(  
 		<Container>
-			<TopBar user={user}/>
+			<TopBar />
 			<Body>
 				<TopToday>
 					<div>{`${weekDay}, ${dayAndMonth}`}</div>

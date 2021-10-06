@@ -26,7 +26,7 @@ export default function Habit(){
 	if(!user) {
 		if(!userStorage){
 			history.push("/");
-			return null;
+			return;
 		}else{
 			setUser(userStorage);
 			config = {
@@ -172,7 +172,7 @@ export default function Habit(){
     
 	return(
 		<Container>
-			<TopBar/>
+			<TopBar />
 			<Body>
 				<Top>
 					<div>Meus hábitos</div>

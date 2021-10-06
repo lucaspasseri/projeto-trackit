@@ -90,7 +90,7 @@ export default function Historic(){
 
 	return(
 		<Container>
-			<TopBar user={user}/>
+			<TopBar />
 			<Body>
 				<Top>
 					<div>Histórico</div>
