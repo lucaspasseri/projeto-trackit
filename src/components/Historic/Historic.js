@@ -29,26 +29,20 @@ export default function Historic(){
 
 	let config;
 
-	if(!user){
-		if(!userStorage){
-			history.push("/");
-			return null;
-		} else {
-			setUser(localStorage);
-			config = {
-				headers: {
-					"Authorization": `Bearer ${userStorage.token}`
-				}
-			};
-		}
-	} else {
+	if(user){
 		config = {
 			headers: {
 				"Authorization": `Bearer ${user.token}`
 			}
 		};
+	} else {
+		setUser(userStorage);
+		config = {
+			headers: {
+				"Authorization": `Bearer ${userStorage.token}`
+			}
+		};
 	}
-
 
 	useEffect(() => {
 
@@ -57,6 +51,9 @@ export default function Historic(){
 
 		request.then(response => {
 			setHistoric(response.data);
+		});
+		request.catch(() => {
+			history.push("/");
 		});
 	}, []);
 
@@ -100,7 +97,10 @@ export default function Historic(){
 						historico===undefined?
 							"Carregando..."
 							:
-							historico
+							historico.length === 0 ?
+								"Nenhum histórico registrado"
+								:
+								historico
 					}
 				</StyleHistoric>
 			</Body>

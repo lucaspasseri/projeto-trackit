@@ -23,27 +23,21 @@ export default function Habit(){
 
 	let config;
 
-	if(!user) {
-		if(!userStorage){
-			history.push("/");
-			return;
-		}else{
-			setUser(userStorage);
-			config = {
-				headers: {
-					"Authorization": `Bearer ${userStorage.token}`
-				}
-			};
-		}
-		
-	} else {
+	if(user){
 		config = {
 			headers: {
 				"Authorization": `Bearer ${user.token}`
 			}
 		};
+	} else {
+		setUser(userStorage);
+		config = {
+			headers: {
+				"Authorization": `Bearer ${userStorage.token}`
+			}
+		};
 	}
-    
+
 	useEffect(() => {
 
 		// eslint-disable-next-line no-undef
@@ -52,7 +46,9 @@ export default function Habit(){
 		request.then(response => {
 			setHabitsList(response.data);
 		});
-
+		request.catch(() => {
+			history.push("/");
+		});
 	}, []);
     
 	const [loading, setLoading] = useState(false);

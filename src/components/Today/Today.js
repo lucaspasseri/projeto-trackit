@@ -25,28 +25,21 @@ export default function Today(){
 	const userStorage = JSON.parse(localStorage.getItem("userStorage"));
 
 	let config;
-
-	if(!user) {
-		if(!userStorage){
-			history.push("/");
-			return;
-		}else{
-			setUser(userStorage);
-			config = {
-				headers: {
-					"Authorization": `Bearer ${userStorage.token}`
-				}
-			};
-		}
-		
-	} else {
+	if(user){
 		config = {
 			headers: {
 				"Authorization": `Bearer ${user.token}`
 			}
 		};
+	} else {
+		setUser(userStorage);
+		config = {
+			headers: {
+				"Authorization": `Bearer ${userStorage.token}`
+			}
+		};
 	}
-    
+
 	useEffect(() => {
 
 		// eslint-disable-next-line no-undef
@@ -54,6 +47,9 @@ export default function Today(){
 
 		request.then(response => {
 			setTodayHabits(response.data);  
+		});
+		request.catch(() => {
+			history.push("/");
 		});
 	}, []);
     
@@ -112,9 +108,13 @@ export default function Today(){
 							"Carregando..."
 							:
 							((todayHabits.filter(item=>item.done).length/todayHabits.length)*100>0?
-								`${((todayHabits.filter(item=>item.done).length/todayHabits.length)).toFixed(2)*100}% dos hábitos concluidos`
+								`${((todayHabits.filter(item=>item.done).length/todayHabits.length)).toFixed(2)*100}
+								% dos hábitos para hoje concluidos`
 								:
-								"Nenhum hábito concluido ainda"
+								todayHabits.filter(item=>item.done).length/todayHabits.length === 0?
+									"0% dos hábitos para hoje concluidos"
+									:
+									"Nenhum hábito cadastrado para hoje"
 							)
 						}
 					</Subtitle>

@@ -2,10 +2,8 @@ import styled from "styled-components";
 import {Link} from "react-router-dom";
 import React, {useContext} from "react";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
-
 import "react-circular-progressbar/dist/styles.css";
 import UserContext from "../../contexts/UserContext";
-    
 
 export default function Footer(){
 
