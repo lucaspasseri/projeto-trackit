@@ -117,8 +117,6 @@ export default function Historic(){
 	);
 }
 
-
-
 const StyleHistoric = styled.div`
 
 	.day-name {
