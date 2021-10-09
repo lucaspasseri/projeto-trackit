@@ -46,7 +46,8 @@ export default function Today(){
 		const request = axios.get(`${process.env.REACT_APP_API_BASE_URL}/habits/today`, config);
 
 		request.then(response => {
-			setTodayHabits(response.data);  
+			setTodayHabits(response.data);
+			setProgress(CalculateProgress(response.data));  
 		});
 		request.catch(() => {
 			history.push("/");

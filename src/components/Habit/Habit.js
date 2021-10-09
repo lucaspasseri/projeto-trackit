@@ -44,6 +44,13 @@ export default function Habit(){
 
 		request.then(response => {
 			setHabitsList(response.data);
+			const req = 
+					// eslint-disable-next-line no-undef
+					axios.get(`${process.env.REACT_APP_API_BASE_URL}/habits/today`, config);
+
+			req.then(response=>{
+				setProgress(CalculateProgress(response.data));
+			});	
 		});
 		request.catch(() => {
 			history.push("/");
@@ -131,6 +138,7 @@ export default function Habit(){
 			alert("Escolha pelo menos um dia da semana.");
 		}
 	}
+
 	function deleteHabit(id){
 		if(window.confirm("Você tem certeza?")){
 			setLoading(true);
