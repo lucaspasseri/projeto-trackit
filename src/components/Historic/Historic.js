@@ -25,26 +25,26 @@ export default function Historic(){
 		"Quinta-feira", 
 		"Sexta-feira", 
 		"Sábado"
-	];  
-
-	let config;
-
-	if(user){
-		config = {
-			headers: {
-				"Authorization": `Bearer ${user.token}`
-			}
-		};
-	} else {
-		setUser(userStorage);
-		config = {
-			headers: {
-				"Authorization": `Bearer ${userStorage.token}`
-			}
-		};
-	}
+	];
 
 	useEffect(() => {
+
+		let config;
+
+		if(user){
+			config = {
+				headers: {
+					"Authorization": `Bearer ${user.token}`
+				}
+			};
+		} else {
+			setUser(userStorage);
+			config = {
+				headers: {
+					"Authorization": `Bearer ${userStorage.token}`
+				}
+			};
+		}
 
 		// eslint-disable-next-line no-undef
 		const request = axios.get(`${process.env.REACT_APP_API_BASE_URL}/habits/history/daily`, config);

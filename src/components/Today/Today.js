@@ -24,23 +24,23 @@ export default function Today(){
 
 	const userStorage = JSON.parse(localStorage.getItem("userStorage"));
 
-	let config;
-	if(user){
-		config = {
-			headers: {
-				"Authorization": `Bearer ${user.token}`
-			}
-		};
-	} else {
-		setUser(userStorage);
-		config = {
-			headers: {
-				"Authorization": `Bearer ${userStorage.token}`
-			}
-		};
-	}
-
 	useEffect(() => {
+
+		let config;
+		if(user){
+			config = {
+				headers: {
+					"Authorization": `Bearer ${user.token}`
+				}
+			};
+		} else {
+			setUser(userStorage);
+			config = {
+				headers: {
+					"Authorization": `Bearer ${userStorage.token}`
+				}
+			};
+		}
 
 		// eslint-disable-next-line no-undef
 		const request = axios.get(`${process.env.REACT_APP_API_BASE_URL}/habits/today`, config);
@@ -54,6 +54,13 @@ export default function Today(){
 	}, []);
     
 	function habitDone(item){
+
+		const config = {
+			headers: {
+				"Authorization": `Bearer ${user.token}`
+			}
+		};
+
 		if(!item.done){
 						
 			const request = 
@@ -108,8 +115,8 @@ export default function Today(){
 							"Carregando..."
 							:
 							((todayHabits.filter(item=>item.done).length/todayHabits.length)*100>0?
-								`${((todayHabits.filter(item=>item.done).length/todayHabits.length)).toFixed(2)*100}
-								% dos hábitos para hoje concluidos`
+								`${((todayHabits.filter(item=>item.done).length/todayHabits.length)).toFixed(2)*100}%
+								dos hábitos para hoje concluidos`
 								:
 								todayHabits.filter(item=>item.done).length/todayHabits.length === 0?
 									"0% dos hábitos para hoje concluidos"

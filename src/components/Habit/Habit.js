@@ -21,24 +21,23 @@ export default function Habit(){
 	const {user, setUser, setProgress} = useContext(UserContext);
 	const userStorage = JSON.parse(localStorage.getItem("userStorage"));
 
-	let config;
-
-	if(user){
-		config = {
-			headers: {
-				"Authorization": `Bearer ${user.token}`
-			}
-		};
-	} else {
-		setUser(userStorage);
-		config = {
-			headers: {
-				"Authorization": `Bearer ${userStorage.token}`
-			}
-		};
-	}
-
 	useEffect(() => {
+		
+		let config;
+		if(user){
+			config = {
+				headers: {
+					"Authorization": `Bearer ${user.token}`
+				}
+			};
+		} else {
+			setUser(userStorage);
+			config = {
+				headers: {
+					"Authorization": `Bearer ${userStorage.token}`
+				}
+			};
+		}
 
 		// eslint-disable-next-line no-undef
 		const request = axios.get(`${process.env.REACT_APP_API_BASE_URL}/habits`, config);
@@ -81,6 +80,12 @@ export default function Habit(){
 			const body = {
 				name: nameNewHabit,
 				days: days
+			};
+
+			const config = {
+				headers: {
+					"Authorization": `Bearer ${user.token}`
+				}
 			};
 
 			const request =
@@ -129,6 +134,12 @@ export default function Habit(){
 	function deleteHabit(id){
 		if(window.confirm("Você tem certeza?")){
 			setLoading(true);
+
+			const config = {
+				headers: {
+					"Authorization": `Bearer ${user.token}`
+				}
+			};
 
 			const request = axios.delete(
 				// eslint-disable-next-line no-undef
