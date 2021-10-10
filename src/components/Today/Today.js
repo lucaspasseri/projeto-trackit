@@ -107,48 +107,59 @@ export default function Today(){
 		return false;
 	}
 
+	const todayTopComponent = 
+	<TopToday>
+		<div>{`${weekDay}, ${dayAndMonth}`}</div>
+		<Subtitle status={undefinedHabits()}>
+			{
+				todayHabits === undefined?
+					"Carregando..."
+					:
+					((todayHabits.filter(item=>item.done).length/todayHabits.length)*100>0?
+						`${((todayHabits.filter(item=>item.done).length/todayHabits.length)).toFixed(2)*100}%
+						dos hábitos para hoje concluidos`
+						:
+						todayHabits.filter(item=>item.done).length/todayHabits.length === 0?
+							"0% dos hábitos para hoje concluidos"
+							:
+							"Nenhum hábito cadastrado para hoje"
+					)
+			}
+		</Subtitle>
+	</TopToday>
+	;
+
+	const habitsListComponent = 
+		todayHabits === undefined?
+			<div>Carregando...</div>
+			:
+			(todayHabits.length>0?
+				todayHabits.map(item=>
+					<CardToday key={item.id}>
+						<LeftSide>
+							<HabitName>{item.name}</HabitName>
+							<div><CurrentSequence status={item.currentSequence}>Sequência atual: <span>{item.currentSequence} dias</span></CurrentSequence></div>
+							<div><HighestSequence status={item.currentSequence} highstatus={item.highestSequence}>Seu recorde: <span>{item.highestSequence} dias</span></HighestSequence></div>
+						</LeftSide>
+						<RightSide onClick={()=>habitDone(item)} done={item.done}>
+							<CheckmarkOutline color='#ffffff' height="80px"  width="80px"/>
+						</RightSide>
+					</CardToday>
+				)
+				:
+				null
+			)
+	;
 	return(  
 		<Container>
 			<TopBar />
 			<Body>
-				<TopToday>
-					<div>{`${weekDay}, ${dayAndMonth}`}</div>
-					<Subtitle status={undefinedHabits()}>
-						{todayHabits === undefined?
-							"Carregando..."
-							:
-							((todayHabits.filter(item=>item.done).length/todayHabits.length)*100>0?
-								`${((todayHabits.filter(item=>item.done).length/todayHabits.length)).toFixed(2)*100}%
-								dos hábitos para hoje concluidos`
-								:
-								todayHabits.filter(item=>item.done).length/todayHabits.length === 0?
-									"0% dos hábitos para hoje concluidos"
-									:
-									"Nenhum hábito cadastrado para hoje"
-							)
-						}
-					</Subtitle>
-				</TopToday>
+				{
+					todayTopComponent
+				}
 				<HabitsList>
-					{todayHabits === undefined?
-						<div>Carregando...</div>
-						:
-						(todayHabits.length>0?
-							todayHabits.map(item=>
-								<CardToday key={item.id}>
-									<LeftSide>
-										<HabitName>{item.name}</HabitName>
-										<div><CurrentSequence status={item.currentSequence}>Sequência atual: <span>{item.currentSequence} dias</span></CurrentSequence></div>
-										<div><HighestSequence status={item.currentSequence} highstatus={item.highestSequence}>Seu recorde: <span>{item.highestSequence} dias</span></HighestSequence></div>
-									</LeftSide>
-									<RightSide onClick={()=>habitDone(item)} done={item.done}>
-										<CheckmarkOutline color='#ffffff' height="80px"  width="80px"/>
-									</RightSide>
-								</CardToday>
-							)
-							:
-							<div></div>
-						)
+					{
+						habitsListComponent
 					}
 				</HabitsList>
 			</Body>

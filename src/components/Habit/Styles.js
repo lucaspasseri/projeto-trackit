@@ -130,7 +130,7 @@ export const NewHabit = styled.form`
 	}	
 `;
 
-export const ButtonPlus = styled.button`
+export const PlusButton = styled.button`
     width: 40px;
     height: 40px;
     background: #52B6FF;

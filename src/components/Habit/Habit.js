@@ -3,13 +3,15 @@ import { TrashOutline } from "react-ionicons";
 import axios from  "axios";
 import Loader from "react-loader-spinner";
 import { useHistory } from "react-router-dom";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer, toast } from "react-toastify";
 
 import TopBar from "../TopBar/TopBar";
 import WeekDay from "../WeekDay/WeekDay";
 import Footer from "../Footer/Footer";
 import CalculateProgress from "../Utils/CalculateProgress";
 import { Top, Body, Container } from "../Styles/Components";
-import { ButtonPlus, NewHabit, InputNameHabit, WeekDaysContainer,
+import { PlusButton, NewHabit, InputNameHabit, WeekDaysContainer,
 	Buttons, CancelButton, SaveButton, CardHabit, NameContainer, Day, 
 	DaysContainer} from "./Styles";
 
@@ -131,13 +133,13 @@ export default function Habit(){
 				});
 			});
 			request.catch(error=>{
-				alert(error);
+				toast(error);
 				setLoading(false);
 			});
 		}else if(nameNewHabit.length === 0){
-			alert("Insira um nome para o seu hábito.");
+			toast("Insira um nome para o seu hábito.");
 		}else if(selectedDays.filter(i => i === true).length === 0){
-			alert("Escolha pelo menos um dia da semana.");
+			toast("Escolha pelo menos um dia da semana.");
 		}
 	}
 
@@ -186,6 +188,56 @@ export default function Habit(){
 			});
 		}
 	}
+
+	const newHabitComponent = <NewHabit active={createNewHabit} onSubmit={saveHabit}>
+		<InputNameHabit 
+			disabled={loading} 
+			onChange={e=>setNameNewHabit(e.target.value)} 
+			value={nameNewHabit} 
+			placeholder="nome do hábito" 
+			type="text">	
+		</InputNameHabit>
+		<WeekDaysContainer>
+			{
+				(!createNewHabit && selectedDays.filter(i=>i===true).length===0)?
+					null
+					:
+					weekDays.map((item, i)=><WeekDay disabled={loading} key={i} id={i} name={item} selectedDays={selectedDays} ></WeekDay>)
+			}
+		</WeekDaysContainer>
+		<Buttons>
+			<CancelButton onClick={newHabit}>Cancelar</CancelButton>
+			{
+				loading?
+					<SaveButton><Loader type="ThreeDots" color="#FFFFFF" height={60} width={60} /></SaveButton>
+					:
+					<SaveButton type="submit">Salvar</SaveButton>
+			}
+		</Buttons>
+	</NewHabit>;
+
+	const habitsListComponent = habitsList === undefined?
+		<div>Carregando...</div>
+		:
+		(habitsList.length>0?
+			habitsList.map((habit,i)=>
+				<CardHabit key={i}>
+					<NameContainer>
+						<div>{habit.name}</div>
+						<div onClick={()=>deleteHabit(habit.id)}>
+							<TrashOutline width="18px"></TrashOutline>
+						</div>
+					</NameContainer>
+					<DaysContainer>
+						{weekDays.map((day,i)=> <Day key={i} status={habit.days.filter(item=>item===i).length>0}> {day}</Day>)}
+					</DaysContainer>
+				</CardHabit>)
+			: 
+			<div>
+				Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!
+			</div>
+		)
+	;
     
 	return(
 		<Container>
@@ -193,48 +245,15 @@ export default function Habit(){
 			<Body>
 				<Top>
 					<div>Meus hábitos</div>
-					<ButtonPlus onClick={newHabit}>+</ButtonPlus>
+					<PlusButton onClick={newHabit}>+</PlusButton>
 				</Top>
 				{
-					<NewHabit active={createNewHabit} onSubmit={saveHabit}>
-						<InputNameHabit disabled={loading} onChange={e=>setNameNewHabit(e.target.value)} value={nameNewHabit} placeholder="nome do hábito" type="text" required></InputNameHabit>
-						<WeekDaysContainer>
-							{(!createNewHabit && selectedDays.filter(i=>i===true).length===0)?
-								null
-								:
-								weekDays.map((item, i)=><WeekDay disabled={loading} key={i} id={i} name={item} selectedDays={selectedDays} ></WeekDay>)
-							}
-						</WeekDaysContainer>
-						<Buttons>
-							<CancelButton onClick={newHabit}>Cancelar</CancelButton>
-							{loading?
-								<SaveButton><Loader type="ThreeDots" color="#FFFFFF" height={60} width={60} /></SaveButton>
-								:
-								<SaveButton type="submit">Salvar</SaveButton>
-							}
-						</Buttons>
-					</NewHabit>
+					newHabitComponent
 				}
-				{habitsList === undefined?
-					<div>Carregando...</div>
-					:
-					(habitsList.length>0?
-						habitsList.map((habit,i)=>
-							<CardHabit key={i}>
-								<NameContainer>
-									<div>{habit.name}</div>
-									<div onClick={()=>deleteHabit(habit.id)}>
-										<TrashOutline width="18px"></TrashOutline>
-									</div>
-								</NameContainer>
-								<DaysContainer>
-									{weekDays.map((day,i)=> <Day key={i} status={habit.days.filter(item=>item===i).length>0}> {day}</Day>)}
-								</DaysContainer>
-							</CardHabit>)
-						: 
-						<div>Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!</div>
-					)
+				{
+					habitsListComponent
 				}
+				<ToastContainer />
 			</Body>
 			<Footer/>
 		</Container>
