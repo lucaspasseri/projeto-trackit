@@ -3,6 +3,7 @@ import styled from "styled-components";
 export const DaysContainer = styled.div`
 	display: flex;
 	align-items: center;
+	cursor: default;
 `;
 
 export const NameContainer = styled.div`
@@ -27,6 +28,7 @@ export const NameContainer = styled.div`
 	div:last-of-type{
 		margin-right: -6px;
 		margin-top: -40px;
+		cursor: pointer;
 	}
 `;
 
@@ -52,8 +54,6 @@ export const CardHabit = styled.div`
 	margin-bottom: 10px;
 	padding: 14px;
 `;
-
-
 
 export const WeekDaysContainer = styled.div`
 	width: 100%;
@@ -87,6 +87,7 @@ export const SaveButton = styled.button`
 	align-items: center;
 `;
 export const CancelButton = styled.div`
+	cursor: pointer;
 	width: 84px;
 	height: 35px;
 	background: #FFFFFF;

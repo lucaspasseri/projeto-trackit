@@ -189,32 +189,34 @@ export default function Habit(){
 		}
 	}
 
-	const newHabitComponent = <NewHabit active={createNewHabit} onSubmit={saveHabit}>
-		<InputNameHabit 
-			disabled={loading} 
-			onChange={e=>setNameNewHabit(e.target.value)} 
-			value={nameNewHabit} 
-			placeholder="nome do hábito" 
-			type="text">	
-		</InputNameHabit>
-		<WeekDaysContainer>
-			{
-				(!createNewHabit && selectedDays.filter(i=>i===true).length===0)?
-					null
-					:
-					weekDays.map((item, i)=><WeekDay disabled={loading} key={i} id={i} name={item} selectedDays={selectedDays} ></WeekDay>)
-			}
-		</WeekDaysContainer>
-		<Buttons>
-			<CancelButton onClick={newHabit}>Cancelar</CancelButton>
-			{
-				loading?
-					<SaveButton><Loader type="ThreeDots" color="#FFFFFF" height={60} width={60} /></SaveButton>
-					:
-					<SaveButton type="submit">Salvar</SaveButton>
-			}
-		</Buttons>
-	</NewHabit>;
+	const newHabitComponent = 
+		<NewHabit active={createNewHabit} onSubmit={saveHabit}>
+			<InputNameHabit 
+				disabled={loading} 
+				onChange={e=>setNameNewHabit(e.target.value)} 
+				value={nameNewHabit} 
+				placeholder="nome do hábito" 
+				type="text">	
+			</InputNameHabit>
+			<WeekDaysContainer>
+				{
+					(!createNewHabit && selectedDays.filter(i=>i===true).length===0)?
+						null
+						:
+						weekDays.map((item, i)=><WeekDay disabled={loading} key={i} id={i} name={item} selectedDays={selectedDays} ></WeekDay>)
+				}
+			</WeekDaysContainer>
+			<Buttons>
+				<CancelButton onClick={newHabit}>Cancelar</CancelButton>
+				{
+					loading?
+						<SaveButton><Loader type="ThreeDots" color="#FFFFFF" height={60} width={60} /></SaveButton>
+						:
+						<SaveButton type="submit">Salvar</SaveButton>
+				}
+			</Buttons>
+		</NewHabit>
+	;
 
 	const habitsListComponent = habitsList === undefined?
 		<div>Carregando...</div>

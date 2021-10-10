@@ -50,6 +50,7 @@ export const LeftSide = styled.div`
 	flex-direction:column;
 `;
 export const RightSide = styled.div`
+	cursor: pointer;
 	width: 69px;
 	display: flex;
 	justify-content: center;

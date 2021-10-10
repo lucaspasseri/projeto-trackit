@@ -40,16 +40,16 @@ export const Body = styled.div`
 `;
 
 export const Header = styled.div`
-    height: 70px;
-    background: #126BA5;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15);
-    position: fixed;
-    top: 0;
-    left: 0;
-    display: flex; 
-    justify-content:space-between;
-    align-items: center;
-    padding: 0 15px 0 20px;
+	height: 70px;
+	background: #126BA5;
+	box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15);
+	position: fixed;
+	top: 0;
+	left: 0;
+	display: flex; 
+	justify-content:space-between;
+	align-items: center;
+	padding: 0 15px 0 20px;
 	width: 100vw;
 	@media screen and (max-width: 320px) {
 		width: 320px;
@@ -60,6 +60,9 @@ export const Header = styled.div`
 		width: 120px;
 		justify-content: space-between;
 		align-items: center;
+		div:last-of-type{
+			cursor: pointer;
+		}
 	}
 `;
 export const Title = styled.div`
