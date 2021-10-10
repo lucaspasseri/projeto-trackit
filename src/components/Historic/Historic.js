@@ -8,11 +8,12 @@ import UserContext from "../../contexts/UserContext";
 import Footer from "../Footer/Footer";
 import TopBar from "../TopBar/TopBar";
 import { Top, Body, Container } from "../Styles/Components";
+import CalculateProgress from "../Utils/CalculateProgress";
 
 export default function Historic(){
 	const history = useHistory();
 
-	const { user, setUser} = useContext(UserContext);
+	const { user, setUser, setProgress} = useContext(UserContext);
 	const [ historic, setHistoric ] = useState();
 
 	const userStorage = JSON.parse(localStorage.getItem("userStorage"));
@@ -25,32 +26,39 @@ export default function Historic(){
 		"Quinta-feira", 
 		"Sexta-feira", 
 		"Sábado"
-	];  
-
-	let config;
-
-	if(user){
-		config = {
-			headers: {
-				"Authorization": `Bearer ${user.token}`
-			}
-		};
-	} else {
-		setUser(userStorage);
-		config = {
-			headers: {
-				"Authorization": `Bearer ${userStorage.token}`
-			}
-		};
-	}
+	];
 
 	useEffect(() => {
+
+		let config;
+
+		if(user){
+			config = {
+				headers: {
+					"Authorization": `Bearer ${user.token}`
+				}
+			};
+		} else {
+			setUser(userStorage);
+			config = {
+				headers: {
+					"Authorization": `Bearer ${userStorage.token}`
+				}
+			};
+		}
 
 		// eslint-disable-next-line no-undef
 		const request = axios.get(`${process.env.REACT_APP_API_BASE_URL}/habits/history/daily`, config);
 
 		request.then(response => {
 			setHistoric(response.data);
+			const req = 
+					// eslint-disable-next-line no-undef
+					axios.get(`${process.env.REACT_APP_API_BASE_URL}/habits/today`, config);
+
+			req.then(response=>{
+				setProgress(CalculateProgress(response.data));
+			});	
 		});
 		request.catch(() => {
 			history.push("/");
@@ -108,8 +116,6 @@ export default function Historic(){
 		</Container>
 	);
 }
-
-
 
 const StyleHistoric = styled.div`
 

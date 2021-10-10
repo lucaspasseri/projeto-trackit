@@ -28,13 +28,14 @@ export default function WeekDays({selectedDays, id, name}){
 }
 
 const ButtonWeekDay = styled.div`
-    width: 30px;
-    height: 30px;
-    background: ${props=>props.selected?"#cfcfcf":"#FFFFFF"};
-    border: 1px solid #D5D5D5;
-    border-radius: 5px;
-    font-family: 'Lexend Deca', sans-serif;
-    font-size: 19.976px;
-    line-height: 25px;
-    color: ${props=>props.selected?"#FFFFFF":"#cfcfcf"};
+	cursor: pointer;
+	width: 30px;
+	height: 30px;
+	background: ${props=>props.selected?"#cfcfcf":"#FFFFFF"};
+	border: 1px solid #D5D5D5;
+	border-radius: 5px;
+	font-family: 'Lexend Deca', sans-serif;
+	font-size: 19.976px;
+	line-height: 25px;
+	color: ${props=>props.selected?"#FFFFFF":"#cfcfcf"};
 `;
