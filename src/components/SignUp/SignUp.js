@@ -6,6 +6,9 @@ import logo from "../../assets/trackit-image.jpg";
 import { UserActs, InputLogIn, ButtonLogIn, NavLink, ContainerAuth,
 	HeaderAuth, Logo, ImageLogo, TextLogo } from "../Styles/Components";
 
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer, toast } from "react-toastify";
+
 export default function SignUp(){
 	let history = useHistory();
 
@@ -42,7 +45,7 @@ export default function SignUp(){
 				setName("");
 				setImage("");
 				setLoading(false);
-				alert("Ocorreu algum erro no cadastro.");
+				toast("Ocorreu algum erro durante o cadastro.");
 			});
 		}
 	}
@@ -68,6 +71,7 @@ export default function SignUp(){
 				}
 				<NavLink to="/">Já tem uma conta? Faça login!</NavLink>
 			</UserActs>
+			<ToastContainer />
 		</ContainerAuth>    
 	);
 }
