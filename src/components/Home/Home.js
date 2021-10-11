@@ -7,6 +7,9 @@ import logo from "../../assets/trackit-image.jpg";
 import { UserActs, InputLogIn, ButtonLogIn, NavLink, ContainerAuth,
 	HeaderAuth, Logo, ImageLogo, TextLogo } from "../Styles/Components";
 
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer, toast } from "react-toastify";
+
 export default function Home(){
 	const {setUser} = useContext(UserContext);
 	let history = useHistory();
@@ -53,7 +56,7 @@ export default function Home(){
 				setLoading(false);
 				setEmail("");
 				setPassword("");
-				alert("E-mail ou senha incorretos.");
+				toast("E-mail ou senha incorretos.");
 			});   
 		}
 	}
@@ -76,6 +79,7 @@ export default function Home(){
 				}
 				<NavLink to="/cadastro">Não tem uma conta? Cadastre-se!</NavLink>
 			</UserActs>
+			<ToastContainer />
 		</ContainerAuth>
 	);
 }
