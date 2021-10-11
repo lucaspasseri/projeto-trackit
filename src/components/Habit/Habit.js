@@ -5,6 +5,7 @@ import Loader from "react-loader-spinner";
 import { useHistory } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer, toast } from "react-toastify";
+import ConfirmationModal from "../Modal/ConfirmationModal";
 
 import TopBar from "../TopBar/TopBar";
 import WeekDay from "../WeekDay/WeekDay";
@@ -24,6 +25,9 @@ export default function Habit(){
 
 	const {user, setUser, setProgress} = useContext(UserContext);
 	const userStorage = JSON.parse(localStorage.getItem("userStorage"));
+
+	const [isOpen, setIsOpen] = useState(false);
+	const [habitId, setHabitId] = useState();
 
 	useEffect(() => {
 		
@@ -143,50 +147,53 @@ export default function Habit(){
 		}
 	}
 
+	function openModal(id){
+		setIsOpen(true);
+		setHabitId(id);
+	}
+
 	function deleteHabit(id){
-		if(window.confirm("Você tem certeza?")){
-			setLoading(true);
+		setLoading(true);
 
-			const config = {
-				headers: {
-					"Authorization": `Bearer ${user.token}`
-				}
-			};
+		const config = {
+			headers: {
+				"Authorization": `Bearer ${user.token}`
+			}
+		};
 
-			const request = axios.delete(
+		const request = axios.delete(
+			// eslint-disable-next-line no-undef
+			`${process.env.REACT_APP_API_BASE_URL}/habits/${id}`, config
+		);
+		
+		request.then(()=>{
+			const request = 
 				// eslint-disable-next-line no-undef
-				`${process.env.REACT_APP_API_BASE_URL}/habits/${id}`, config
-			);
-			
-			request.then(()=>{
-				const request = 
-					// eslint-disable-next-line no-undef
-					axios.get(`${process.env.REACT_APP_API_BASE_URL}/habits`, config);
+				axios.get(`${process.env.REACT_APP_API_BASE_URL}/habits`, config);
 
-				request.then(response => {
-					setHabitsList(response.data);
-					setLoading(false);
-				});
-				request.catch(()=>{
-					setLoading(false);
-				});
-
-				const req = 
-					// eslint-disable-next-line no-undef
-					axios.get(`${process.env.REACT_APP_API_BASE_URL}/habits/today`, config);
-				req.then(response=>{
-					setProgress(CalculateProgress(response.data));
-					setLoading(false);
-				});
-				req.catch(()=>{
-					setLoading(false);
-				});
-
+			request.then(response => {
+				setHabitsList(response.data);
+				setLoading(false);
 			});
 			request.catch(()=>{
 				setLoading(false);
 			});
-		}
+
+			const req = 
+				// eslint-disable-next-line no-undef
+				axios.get(`${process.env.REACT_APP_API_BASE_URL}/habits/today`, config);
+			req.then(response=>{
+				setProgress(CalculateProgress(response.data));
+				setLoading(false);
+			});
+			req.catch(()=>{
+				setLoading(false);
+			});
+
+		});
+		request.catch(()=>{
+			setLoading(false);
+		});
 	}
 
 	const newHabitComponent = 
@@ -224,9 +231,10 @@ export default function Habit(){
 		(habitsList.length>0?
 			habitsList.map((habit,i)=>
 				<CardHabit key={i}>
+					<ConfirmationModal isOpen={isOpen} setIsOpen={setIsOpen} deleteHabit={deleteHabit} habitId={habitId}/>
 					<NameContainer>
 						<div>{habit.name}</div>
-						<div onClick={()=>deleteHabit(habit.id)}>
+						<div onClick={()=>openModal(habit.id)}>
 							<TrashOutline width="18px"></TrashOutline>
 						</div>
 					</NameContainer>
